@@ -6,18 +6,18 @@ from django.urls import reverse_lazy
 
 
 UNFOLD = {
-    "SITE_TITLE": "MeIsChat",
-    "SITE_HEADER": "MeIsChat",
+    "SITE_TITLE": "Movie Reservation System",
+    "SITE_HEADER": "Movie Reservation System",
     "SITE_URL": "/",
     # "SITE_ICON": lambda request: static("icon.svg"),  # both modes, optimise for 32px height
     "SITE_ICON": {
-        "light": lambda request: static("icon-light.svg"),  # light mode
-        "dark": lambda request: static("icon-dark.svg"),  # dark mode
+        "light": lambda request: static("icon/cinema 4d.png"),  # light mode
+        "dark": lambda request: static("icon/cinema 4d.png"),  # dark mode
     },
     # "SITE_LOGO": lambda request: static("logo.svg"),  # both modes, optimise for 32px height
     "SITE_LOGO": {
-        "light": lambda request: static("logo-light.svg"),  # light mode
-        "dark": lambda request: static("logo-dark.svg"),  # dark mode
+        "light": lambda request: static("logo/Cinema-4D-Logo.png"),  # light mode
+        "dark": lambda request: static("logo/Cinema-4D-Logo.png"),  # dark mode
     },
     "SITE_SYMBOL": "speed",  # symbol from icon set
     "SITE_FAVICONS": [
@@ -25,7 +25,7 @@ UNFOLD = {
             "rel": "icon",
             "sizes": "32x32",
             "type": "image/svg+xml",
-            "href": lambda request: static("favicon.svg"),
+            "href": lambda request: static("logo/Cinema-4D-Logo.png"),  
         },
     ],
     "SHOW_HISTORY": True, # show/hide "History" button, default: True
