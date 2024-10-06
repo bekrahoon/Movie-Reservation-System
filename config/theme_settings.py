@@ -63,12 +63,28 @@ UNFOLD = {
                 "collapsible": True,  # Collapsible group of links
                 "items": [
                     {
-                        "title": _("Dashboard"),
-                        "icon": "dashboard",  # Supported icon set: https://fonts.google.com/icons
-                        "link": reverse_lazy("admin:index"),
-                        "badge": "Master Admin",
+                        "title": _("Genre"),
+                        "icon": "theater_comedy",  # Supported icon set: https://fonts.google.com/icons
+                        "link": reverse_lazy("admin:base_genre_changelist"),
+                        "badge": "Admin",
                         "permission": lambda request: request.user.is_superuser,
                     },
+                                                                                {
+                        "title": _("Movie"),
+                        "icon": "live_tv",  # Supported icon set: https://fonts.google.com/icons
+                        "link": reverse_lazy("admin:base_movie_changelist"),
+                        "badge": "Admin",
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                                        {
+                        "title": _("Booking"),
+                        "icon": "interactive_space",  # Supported icon set: https://fonts.google.com/icons
+                        "link": reverse_lazy("admin:base_booking_changelist"),
+                        "badge": "Admin",
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+
+                                                            
                 ],
             },
         ],
