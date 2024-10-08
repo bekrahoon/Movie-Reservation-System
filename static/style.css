@@ -1,0 +1,124 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    background-image: url(img/walpaper.png);
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+}
+@font-face{
+    font-family: "Nunito Bold";
+    src: url(fonts/ofont.ru_Nunito.ttf);
+}
+a{
+    text-decoration: none;
+}
+.header_menu{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header_menu a{
+    color: white;
+}
+.logo-text{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 10px;
+}
+.logo-img{
+    display: inline-block;
+    vertical-align: middle;
+}
+.logo-img img{
+    width: 35px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.logo{
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    top: 9px;
+    left: 25px;
+}
+.menu{
+    position: relative;
+    left: 200px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.menu li{
+    display: inline-block;
+    vertical-align: middle;
+}
+.menu a{
+    position: relative;
+    top: 8px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 44px;
+    font-family: "Nunito Bold";
+    font-size: 9px;
+}
+
+.book{
+    position: relative;
+    top: 8px;
+    display: inline-block;
+    vertical-align: middle;
+    font-family: "Nunito Bold";
+}
+.book-call{
+    display: inline-block;
+    vertical-align: middle;
+    font-family: "Nunito Bold";
+    font-size: 9px;
+}
+.book-call a{
+    position: relative;
+    bottom: 5px;
+}
+.book-button{
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    left: 20px;
+}
+.book-button a button{
+    background-color: #490000;
+    color: white;
+    display: inline-flex;
+    padding: 12px 10px 10px 10px;
+    font-family: "Nunito Bold";
+    font-size: 9px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.sign{
+    position: relative;
+    top: 8px;
+    right: 25px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.sign a button{
+    background: none;
+    color: white;
+    display: inline-flex;
+    padding: 12px 10px 10px 10px;
+    font-family: "Nunito Bold";
+    font-size: 9px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #FFF;
+}
+.line{
+    margin-top: 20px;
+    stroke-width: 0.5px solid white
+}

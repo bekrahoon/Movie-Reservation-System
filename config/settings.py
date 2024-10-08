@@ -34,7 +34,6 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS',  default='*', cast=lambda v: [i.strip() for i in v.split(',')])
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,7 +45,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "base",
-    "user_register",
 ]
 
 MIDDLEWARE = [
@@ -64,7 +62,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR /  'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
