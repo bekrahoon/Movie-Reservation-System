@@ -34,7 +34,6 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS',  default='*', cast=lambda v: [i.strip() for i in v.split(',')])
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -63,7 +62,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR /  'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -88,7 +87,7 @@ DATABASES = {
         'NAME': config('DATABASE_NAME'),
         'USER': config('DATABASE_USER'),
         'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': 'localhost',  #! change to localhost  if you're running on local machine
+        'HOST': 'localhost',
         'PORT': '5432',
         'OPTIONS': {
             'client_encoding': 'UTF8',  

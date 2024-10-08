@@ -11,13 +11,13 @@ UNFOLD = {
     "SITE_URL": "/",
     # "SITE_ICON": lambda request: static("icon.svg"),  # both modes, optimise for 32px height
     "SITE_ICON": {
-        "light": lambda request: static("icon/cinema 4d.png"),  # light mode
-        "dark": lambda request: static("icon/cinema 4d.png"),  # dark mode
+        "light": lambda request: static("img/логотипы/cinema 4d.png"),  # light mode
+        "dark": lambda request: static("img/логотипы/cinema 4d.png"),  # dark mode
     },
     # "SITE_LOGO": lambda request: static("logo.svg"),  # both modes, optimise for 32px height
     "SITE_LOGO": {
-        "light": lambda request: static("logo/Cinema-4D-Logo.png"),  # light mode
-        "dark": lambda request: static("logo/Cinema-4D-Logo.png"),  # dark mode
+        "light": lambda request: static("img/логотипы/Cinema-4D-Logo.png"),  # light mode
+        "dark": lambda request: static("img/логотипы/Cinema-4D-Logo.png"),  # dark mode
     },
     "SITE_SYMBOL": "speed",  # symbol from icon set
     "SITE_FAVICONS": [
@@ -25,7 +25,7 @@ UNFOLD = {
             "rel": "icon",
             "sizes": "32x32",
             "type": "image/svg+xml",
-            "href": lambda request: static("logo/Cinema-4D-Logo.png"),  
+            "href": lambda request: static("img/логотипы/Cinema-4D-Logo.png"),  
         },
     ],
     "SHOW_HISTORY": True, # show/hide "History" button, default: True

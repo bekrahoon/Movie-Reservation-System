@@ -3,6 +3,7 @@ black==24.8.0
 click==8.1.7
 colorama==0.4.6
 Django==5.1.1
+django-otp==1.5.4
 django-unfold==0.39.0
 mypy-extensions==1.0.0
 packaging==24.1
