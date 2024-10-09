@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+    <h1>{{ movie.title }}</h1>
+    <img src="{{ movie.poster.url }}" alt="Постер фильма" width="300">
+    <p>{{ movie.description }}</p>
+    <p>Жанры: {{ movie.genre.all|join:", " }}</p>
+    <p>Время показа: {{ movie.show_time }}</p>
+    
+    {% comment %} <h2>Бронирование</h2>
+    <form action="{% url 'booking_create' movie.pk %}" method="POST">
+        {% csrf_token %}
+        <label for="seats">Количество мест:</label>
+        <input type="number" name="seats" min="1" required>
+        <button type="submit">Забронировать</button>
+    </form> {% endcomment %}
+{% endblock content %}
+

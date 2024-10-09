@@ -15,6 +15,16 @@ body{
 a{
     text-decoration: none;
 }
+li{
+    color: #c32dbb;
+}
+h1{
+    color: aquamarine;
+}
+p{
+    color: rgb(38, 253, 0);
+    font-size: 25px;
+}
 .header_menu{
     display: flex;
     justify-content: space-between;

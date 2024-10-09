@@ -1,0 +1,20 @@
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+    <h1>Список фильмов</h1>
+    <ul>
+        {% for movie in movies %}
+            <li>
+                <a href="{% url 'movie_detail' movie.id %}"><img src="{{ movie.poster.url }}" alt="Постер фильма" width="200"></a> 
+
+                <a href="{% url 'movie_detail' movie.id %}">{{ movie.title }}</a> 
+                - Жанры: {{ movie.genre.all|join:", " }}
+                - Время показа: {{ movie.show_time }}
+            </li>
+        {% empty %}
+            <li>Фильмов нет</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}
+
+

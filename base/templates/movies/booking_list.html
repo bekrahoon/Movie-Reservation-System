@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои бронирования</title>
+</head>
+<body>
+    <h1>Мои бронирования</h1>
+    <ul>
+        {% for booking in bookings %}
+            <li>
+                {{ booking.movie.title }} — {{ booking.show_time }} — Мест: {{ booking.seats }}
+                {% if booking.is_upcoming %}
+                    <form action="{% url 'booking_cancel' booking.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">Отменить бронирование</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>У вас нет бронирований</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

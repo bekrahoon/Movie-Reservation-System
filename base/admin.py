@@ -44,7 +44,7 @@ class MovieAdminClass(ModelAdmin):
     list_filter_submit = True  # Кнопка для применения фильтров
 
     filter_horizontal = ("genre",)
-    
+
     formfield_overrides = {
         ArrayField: {
             "widget": ArrayWidget,
