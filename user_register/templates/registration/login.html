@@ -12,9 +12,8 @@
         {{ form.as_p }}
         <button type="submit">Войти</button>
     </form>
-    <div><span>Еще не Зарегестрированы?</span></div>
-    <button><a href="{% url "register" %}">Зарегестрироваться</a></button>
-    <button><a href="{% url "home" %}">на главную</a></button>
-    
+    <div><span>Еще нет аккаунта?
+    <button><a href="{% url "register" %}">Зарегестрироваться</a></button></span></div>
+    <button><a href="{% url "home" %}">вернуться на главную</a></button>
 </body>
 </html>

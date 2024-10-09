@@ -18,3 +18,4 @@ def register(request):
 def logoutUser(request: HttpRequest) -> HttpResponse:
     logout(request)
     return redirect("home")
+
