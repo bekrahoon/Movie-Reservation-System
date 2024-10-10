@@ -4,6 +4,8 @@ from base.forms import BookingForm
 from base.models import Movie, Booking
 from django.contrib import messages
 
+
+@login_required
 def booking_list(request):
     bookings = Booking.objects.filter(user=request.user)
     return render(request, "movies/booking_list.html", context={"bookings":bookings})
