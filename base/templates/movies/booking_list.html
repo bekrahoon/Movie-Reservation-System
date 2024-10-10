@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мои бронирования</title>
-</head>
-<body>
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
     <h1>Мои бронирования</h1>
     <ul>
         {% for booking in bookings %}
@@ -22,5 +17,4 @@
             <li>У вас нет бронирований</li>
         {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock %}

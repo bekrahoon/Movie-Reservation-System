@@ -14,7 +14,10 @@
         {% empty %}
             <li>Фильмов нет</li>
         {% endfor %}
-    </ul>
+    </ul>   
+    {% if request.user.is_staff %}
+        <a href="{% url 'add_movie' %}">Добавить новый фильм</a>
+    {% endif %}
 {% endblock content %}
 
 

@@ -19,11 +19,20 @@ li{
     color: #c32dbb;
 }
 h1{
-    color: aquamarine;
+    color: rgb(198, 58, 30);
+}
+h2{
+    color: chartreuse;
+}
+label{
+    color: #490000;
 }
 p{
     color: rgb(38, 253, 0);
     font-size: 25px;
+}
+button{
+    background-color: #c32dbb;
 }
 .header_menu{
     display: flex;

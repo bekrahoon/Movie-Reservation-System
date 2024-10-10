@@ -3,8 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpRequest
 from base.forms import MovieForm
 from base.models import Booking, Movie
-from django.db.models import Sum
-
+from django.contrib import messages
 
 def home(request: HttpRequest):
     movies = Movie.objects.all()
@@ -18,6 +17,7 @@ def add_movie(request):
         form = MovieForm(request.POST, request.FILES)
         if form.is_valid:
             form.save()
+            messages.success(request, 'Фильм успешно добавлен.')
             return redirect("home")
     else:
         form = MovieForm()
@@ -35,15 +35,33 @@ def edit_movie(request, movie_id):
 
     else:
         form = MovieForm(instance=movie)
-    return render(request, "movies/edit_movie.html", {"form": form})
+    return render(request, "movies/edit_movie.html", {"form": form, "movie":movie})
+
+def delete_movie(request, pk):
+    movie = get_object_or_404(Movie, pk=pk)
+    
+    if request.method == 'POST':
+        movie.delete()
+        return redirect("home")
+    return render(request, 'movies/delete_movie.html', {'movie': movie})
+        
+        
+def movie_detail(request, pk):
+    movie = get_object_or_404(Movie,  pk=pk)
+    return render(request, 'movies/movie_detail.html', {'movie': movie})
 
 
 @staff_member_required
 def admin_report(request):
-    total_bookings = Booking.objects.count()
-    total_income = Booking.objects.aaggregate(income=Sum("seats"))["income"]
-    return render(
-        request,
-        "admin/admin_report.html",
-        {"total_bookings": total_bookings, "total_income": total_income},
-    )
+    bookings = Booking.objects.all()
+    
+    total_income = sum(booking.movie.price * booking.seats for booking in bookings)
+    
+    available_seats = {movie.title: movie.available_seats for movie in Movie.objects.all()}
+    
+    context = {
+        "bookings":bookings,
+        "total_income":total_income,
+        "available_seats":available_seats
+    }
+    return render(request, "admin/report.html", context)

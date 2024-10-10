@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from .base_model import BaseModel
-
+from django.utils import timezone
 User = get_user_model()
 
 
@@ -28,6 +28,10 @@ class Booking(BaseModel):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     show_time = models.DateTimeField()
     seats = models.IntegerField()
+    
+    def can_cancel(self):
+        # Проверка, что бронирование можно отменить только до начала сеанса
+        return self.show_time > timezone.now()
 
     def __str__(self):
         return f"{self.user.username} - {self.movie.title} - {self.show_time}"
