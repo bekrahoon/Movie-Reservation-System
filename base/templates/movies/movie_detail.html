@@ -14,11 +14,6 @@
         <input type="number" name="seats" min="1" required>
         <button type="submit">Забронировать</button>
     </form> 
-    {% if request.user.is_staff %}
-        <a href="{% url 'movie_edit' movie.pk %}">Редактировать</a> |
-        <a href="{% url 'movie_delete' movie.pk %}">Удалить</a>
-    {% endif %}
-
 <a href="{% url 'home' %}">Вернуться к списку фильмов</a>
 {% endblock content %}
 

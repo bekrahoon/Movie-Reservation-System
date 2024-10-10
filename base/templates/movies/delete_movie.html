@@ -1,9 +1,0 @@
-{% extends 'index.html' %}
-{% block content %}
-  <h2>Are you sure you want to delete the movie: "{{ movie.title }}"?</h2>
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit">Yes, delete</button>
-    <a href="{% url 'movie_detail' movie.pk %}">Cancel</a>  <!-- Ссылка на отмену -->
-  </form>
-{% endblock %}
