@@ -5,13 +5,19 @@
     <ul>
         {% for booking in bookings %}
             <li>
-                {{ booking.movie.title }} — {{ booking.show_time }} — Мест: {{ booking.seats }}
-                {% if booking.is_upcoming %}
-                    <form action="{% url 'booking_cancel' booking.id %}" method="POST" style="display:inline;">
+                {{ booking.movie.title }} — {{ booking.movie.show_time }} — Мест: {{ booking.seats }}
+                {% if booking.can_cancel %}
+                    <form action="{% url 'booking_cancel' booking.pk %}" method="POST" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit">Отменить бронирование</button>
                     </form>
                 {% endif %}
+                {% if booking.can_cancel %}
+                <form action="{% url 'booking_edit' booking.pk %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Измененить</button>
+                </form>
+            {% endif %}
             </li>
         {% empty %}
             <li>У вас нет бронирований</li>

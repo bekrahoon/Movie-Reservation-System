@@ -1,9 +1,7 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpRequest
-from base.forms import MovieForm
-from base.models import Booking, Movie
-from django.contrib import messages
+from base.models import Movie
 
 def home(request: HttpRequest):
     movies = Movie.objects.all()

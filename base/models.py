@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from .base_model import BaseModel
 from django.utils import timezone
+from django.db import transaction
+from django.core.exceptions import ValidationError
+
 User = get_user_model()
 
 
@@ -28,20 +31,33 @@ class Movie(BaseModel):
 class Booking(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    show_time = models.DateTimeField()
     seats = models.PositiveIntegerField()
-    booked_at = models.DateTimeField(default=timezone.now())
-    
+    booked_at = models.DateTimeField(default=timezone.now)
+
     def can_cancel(self):
         # Проверка, что бронирование можно отменить только до начала сеанса
-        return self.show_time > timezone.now()
+        return self.movie.show_time > timezone.now()
 
     def __str__(self):
-        return f"{self.user.username} - {self.movie.title} - {self.show_time}  - {self.seats} seats"
+        return f"{self.user.username} - {self.movie.title} - {self.movie.show_time} - {self.seats} seats"
+
+
+    def save(self, *args, **kwargs):
+        # Применение транзакции
+        with transaction.atomic():
+            # Проверка доступных мест перед уменьшением
+            if self.seats > self.movie.available_seats:
+                raise ValidationError(f"Not enough available seats. Available: {self.movie.available_seats}")
+            
+            # Обновление количества доступных мест
+            self.movie.available_seats -= self.seats
+            self.movie.save()  # Сохранение изменения в фильме
+            
+            super().save(*args, **kwargs)  # Сохранение бронирования
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "movie", "show_time"], name="unique_booking"
+                fields=["user", "movie"], name="unique_booking"
             )
         ]
