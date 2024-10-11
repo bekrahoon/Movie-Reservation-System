@@ -4,13 +4,24 @@
     <h1>Список фильмов</h1>
     <ul>
         {% for movie in movies %}
-            <li>
-                <a href="{% url 'movie_detail' movie.id %}"><img src="{{ movie.poster.url }}" alt="Постер фильма" width="200"></a> 
+            {% if  movie.available_seats != 0 %}
+                <li>
+                    <a href="{% url 'movie_detail' movie.id %}"><img src="{{ movie.poster.url }}" alt="Постер фильма" width="200"></a> 
 
-                <a href="{% url 'movie_detail' movie.id %}">{{ movie.title }}</a> 
-                - Жанры: {{ movie.genre.all|join:", " }}
-                - Время показа: {{ movie.show_time }}
-            </li>
+                    <a href="{% url 'movie_detail' movie.id %}">{{ movie.title }}</a> 
+                    - Жанры: {{ movie.genre.all|join:", " }}
+                    - Время показа: {{ movie.show_time }}
+                </li>
+            {% else %}
+                <li>
+                    <a href="{% url 'movie_detail' movie.id %}"><img src="{{ movie.poster.url }}" alt="Постер фильма" width="200"></a> 
+
+                    <a href="{% url 'movie_detail' movie.id %}">{{ movie.title }}</a> 
+                    - Жанры: {{ movie.genre.all|join:", " }}
+                    - Время показа: {{ movie.show_time }}
+                    - <span style="color: red">Нет доступных мест</span>
+                </li>
+            {% endif %}
         {% empty %}
             <li>Фильмов нет</li>
         {% endfor %}

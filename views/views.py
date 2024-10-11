@@ -22,5 +22,8 @@ def movie_detail(request, pk):
     movie = get_object_or_404(Movie,  pk=pk)
     return render(request, 'movies/movie_detail.html', {'movie': movie})
 
+def about_us(request):
+    return render (request, 'movies/about_us.html')
 
-
+def genres(request):
+    return render (request, 'movies/genre.html')

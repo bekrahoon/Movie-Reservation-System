@@ -6,7 +6,11 @@
     <p>{{ movie.description }}</p>
     <p>Жанры: {{ movie.genre.all|join:", " }}</p>
     <p>Время показа: {{ movie.show_time }}</p>
-    
+    {% if  movie.available_seats != 0 %}
+    <p>Колличество свободных мест: {{ movie.available_seats }}</p>
+    {% else %}
+    <p style="color: red">Нет доступных мест</p>
+    {% endif %}
     <h2>Бронирование</h2>
     <form action="{% url 'booking_create' movie.pk %}" method="POST">
         {% csrf_token %}
