@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+<h2>Фильмы жанра: {{ genre.name }}</h2>
+<ul>
+    {% for movie in movies %}
+    <a href="{% url 'movie_detail' movie.id %}"><img src="{{ movie.poster.url }}" alt="Постер фильма" width="200"></a> 
+    
+    <li><a href="{% url 'movie_detail' movie.id %}">{{ movie.title }}</a> — {{ movie.description }}</li>
+    {% empty %}
+    <li>Нет фильмов в этом жанре.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

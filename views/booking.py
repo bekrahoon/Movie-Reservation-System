@@ -1,15 +1,18 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from base.forms import BookingForm
-from base.models import Movie, Booking
+from base.models import Genre, Movie, Booking
 from django.contrib.auth import views as auth_views
 from django.contrib import messages
 
 
 @login_required
 def booking_list(request):
+    genres = Genre.objects.all()  
+    
     bookings = Booking.objects.filter(user=request.user)
-    return render(request, "movies/booking_list.html", context={"bookings":bookings})
+    return render(request, "movies/booking_list.html", context={"bookings":bookings,  "genres":genres})
+
 
 
 @login_required

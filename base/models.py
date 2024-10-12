@@ -19,7 +19,7 @@ class Movie(BaseModel):
     title = models.CharField(max_length=200)
     description = models.TextField()
     poster = models.ImageField(upload_to="poster/")
-    genre = models.ManyToManyField(Genre)
+    genre = models.ManyToManyField(Genre, related_name="movies")
     show_time = models.DateTimeField()
     price = models.DecimalField(max_digits=6, decimal_places=2)  
     available_seats = models.PositiveIntegerField() 
