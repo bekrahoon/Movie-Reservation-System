@@ -39,11 +39,9 @@ def booking_create(request, pk):
         if form.is_valid():
             seats = form.cleaned_data['seats']
             if Booking.objects.filter(user = request.user, movie=movie).exists():
-                form.add_error(None, 'Вы уже забронировали этот фильм.')
+                form.add_error(None, 'Вы уже забронировали этот фильм. Отмените бронирование если хотите изменить')
             elif seats > movie.available_seats:
                 form.add_error(None, f'Недостаточно мест. Доступно: {movie.available_seats}')
-            elif seats == 0:
-                form.add_error(None, f' Места не могут быть нулевыми')
             else:
                 booking = form.save(commit = False)
                 booking.movie = movie
