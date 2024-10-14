@@ -15,6 +15,10 @@
                 <li><a href="{% url "home" %}">ГЛАВНАЯ</a></li>
                 <li><a href="{% url "about_us" %}">О НАС</a></li>
                 <li><a href="{% url "genres" %}">ЖАНРЫ</a></li>
+                {% if request.user.is_superuser %}
+                    <li><a href="{% url "admin:index" %}">ADMIN PANEL</a></li>
+                {% endif %}
+            
             </lu>
         </div>
         <form method="GET" action="{% url 'search_movies' %}">
