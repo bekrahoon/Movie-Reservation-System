@@ -3,6 +3,7 @@
 {% block content %}
     <h1>Мои бронирования</h1>
     <ul>
+        <p>{{ form.non_field_errors }}</p>
         {% for booking in bookings %}
             <li>
                 {{ booking.movie.title }} — {{ booking.movie.show_time }} — Мест: {{ booking.seats }}
