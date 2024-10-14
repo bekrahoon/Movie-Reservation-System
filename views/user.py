@@ -15,7 +15,7 @@ def register(request):
         form = RegisterForm()
     return render(request, "registration/register.html", {"form": form})
 
+
 def logoutUser(request: HttpRequest) -> HttpResponse:
     logout(request)
     return redirect("home")
-

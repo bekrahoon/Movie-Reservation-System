@@ -21,9 +21,9 @@ class Movie(BaseModel):
     poster = models.ImageField(upload_to="poster/")
     genre = models.ManyToManyField(Genre, related_name="movies")
     show_time = models.DateTimeField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)  
-    available_seats = models.PositiveIntegerField() 
-    
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    available_seats = models.PositiveIntegerField()
+
     def __str__(self):
         return self.title
 
@@ -41,23 +41,22 @@ class Booking(BaseModel):
     def __str__(self):
         return f"{self.user.username} - {self.movie.title} - {self.movie.show_time} - {self.seats} seats"
 
-
     def save(self, *args, **kwargs):
         # Применение транзакции
         with transaction.atomic():
             # Проверка доступных мест перед уменьшением
             if self.seats > self.movie.available_seats:
-                raise ValidationError(f"Not enough available seats. Available: {self.movie.available_seats}")
-            
+                raise ValidationError(
+                    f"Not enough available seats. Available: {self.movie.available_seats}"
+                )
+
             # Обновление количества доступных мест
             self.movie.available_seats -= self.seats
             self.movie.save()  # Сохранение изменения в фильме
-            
+
             super().save(*args, **kwargs)  # Сохранение бронирования
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=["user", "movie"], name="unique_booking"
-            )
+            models.UniqueConstraint(fields=["user", "movie"], name="unique_booking")
         ]
