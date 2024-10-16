@@ -1,28 +1,30 @@
 from django.conf.urls.static import static
 from django.conf import settings
 from django.urls import path
-from views.booking import booking_create, booking_list, cancel_booking
+from views.booking import BookingCreateView, BookingListView, BookingDeleteView
 from views.views import (
-    about_us,
-    delete_movie,
-    genre_movies,
-    genres,
-    home,
-    movie_detail,
-    search_movies,
+    AboutUsView,
+    GenreMoviesView,
+    GenreListView,
+    HomeView,
+    MovieDetailView,
+    MovieSearchView,
 )
 
 urlpatterns = [
-    path("", home, name="home"),
-    path("movies/<int:pk>/", movie_detail, name="movie_detail"),
-    path("movies/<int:pk>delete", delete_movie, name="movie_delete"),
-    path("movies_genre/<int:pk>/", genre_movies, name="genre_movies"),
-    path("movies_search/", search_movies, name="search_movies"),
-    path("bookings/", booking_list, name="booking_list"),
-    path("bookings/<int:pk>/create/", booking_create, name="booking_create"),
-    path("bookings/<int:pk>/cancel/", cancel_booking, name="booking_cancel"),
-    path("about_us/", about_us, name="about_us"),
-    path("genres/", genres, name="genres"),
+    path("", HomeView.as_view(), name="home"),
+    path("movies/<int:pk>/", MovieDetailView.as_view(), name="movie_detail"),
+    path("movies_genre/<int:pk>/", GenreMoviesView.as_view(), name="genre_movies"),
+    path("movies_search/", MovieSearchView.as_view(), name="search_movies"),
+    path("bookings/", BookingListView.as_view(), name="booking_list"),
+    path(
+        "bookings/<int:pk>/create/", BookingCreateView.as_view(), name="booking_create"
+    ),
+    path(
+        "bookings/<int:pk>/cancel/", BookingDeleteView.as_view(), name="booking_cancel"
+    ),
+    path("about_us/", AboutUsView.as_view(), name="about_us"),
+    path("genres/", GenreListView.as_view(), name="genres"),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

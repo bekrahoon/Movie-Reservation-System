@@ -1,82 +1,91 @@
-from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import get_object_or_404, redirect, render
-from django.http import HttpRequest
-from base.models import Genre, Movie
+from django.views.generic import DetailView, TemplateView, ListView
 from django.db.models import Q
 from base.serializers import MovieSerializer
+from base.models import Genre, Movie
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
-from rest_framework.mixins import ListModelMixin,RetrieveModelMixin
 
 
-def home(request: HttpRequest):
-    genres = Genre.objects.all()
+class HomeView(ListView):
+    model = Movie
+    template_name = "movies/home.html"
+    context_object_name = "movies"
 
-    movies = Movie.objects.all()
-    context = {"movies": movies, "genres": genres}
-
-    return render(request, "movies/home.html", context)
-
-
-def delete_movie(request, pk):
-    movie = get_object_or_404(Movie, pk=pk)
-
-    if request.method == "POST":
-        movie.delete()
-        return redirect("home")
-    return render(request, "movies/delete_movie.html", {"movie": movie})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["genres"] = Genre.objects.all()
+        return context
 
 
-def movie_detail(request, pk):
-    genres = Genre.objects.all()
+class MovieDetailView(DetailView):
+    model = Movie
+    template_name = "movies/movie_detail.html"
+    context_object_name = "movie"
 
-    movie = get_object_or_404(Movie, pk=pk)
-    return render(
-        request, "movies/movie_detail.html", {"movie": movie, "genres": genres}
-    )
-
-
-def about_us(request):
-    genres = Genre.objects.all()
-
-    return render(request, "movies/about_us.html", {"genres": genres})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["genres"] = Genre.objects.all()
+        return context
 
 
-def genres(request):
-    genres = Genre.objects.filter().distinct()
-    context = {"genres": genres}
-    return render(request, "movies/genre.html", context)
+class AboutUsView(TemplateView):
+    template_name = "movies/about_us.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["genres"] = Genre.objects.all()
+        return context
 
 
-def genre_movies(request, pk):
-    genres = Genre.objects.all()
-    genre = get_object_or_404(Genre, pk=pk)
-    movies = genre.movies.all()
-    context = {"genre": genre, "genres": genres, "movies": movies}
-    return render(request, "movies/genre_movies.html", context)
+class GenreListView(ListView):
+    model = Genre
+    template_name = "movies/genre.html"
+    context_object_name = "genres"
+
+    def get_queryset(self):
+        # Возвращаем уникальные жанры
+        return Genre.objects.distinct()
 
 
-def search_movies(request):
-    q = request.GET.get("q")
-    if q:
-        movies = Movie.objects.filter(
-            Q(title__icontains=q) | Q(description__icontains=q)
-        )
-    else:
-        movies = Movie.objects.none()
-    context = {"movies": movies, "q": q}
-    return render(request, "movies/search_movies.html", context)
+class GenreMoviesView(DetailView):
+    model = Genre
+    template_name = "movies/genre_movies.html"
+    context_object_name = "genre"
+
+    def get_context_data(self, **kwargs):
+        # Получаем контекст из родительского класса
+        context = super().get_context_data(**kwargs)
+        # Добавляем жанры и фильмы в контекст
+        context["genres"] = Genre.objects.all()
+        context["movies"] = self.object.movies.all()
+        return context
 
 
+class MovieSearchView(ListView):
+    model = Movie
+    template_name = "movies/search_movies.html"
+    context_object_name = "movies"
 
-class MovieViewSet(
-        ListModelMixin,
-        RetrieveModelMixin, 
-        viewsets.GenericViewSet
-        ):
+    def get_queryset(self):
+        q = self.request.GET.get("q")
+        if q:
+            return Movie.objects.filter(
+                Q(title__icontains=q) | Q(description__icontains=q)
+            )
+        return Movie.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["q"] = self.request.GET.get("q", "")
+        return context
+
+
+class MovieViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
     """
     A simple ViewSet for listing or retrieving Movies.
     """
+
     permission_classes = (IsAuthenticated,)
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
