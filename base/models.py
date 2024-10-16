@@ -4,19 +4,18 @@ from utils.model_abstracts import BaseModel
 from django.utils import timezone
 from django.db import transaction
 from django.core.exceptions import ValidationError
-from django_extensions.db.models import ActivatorModel
 
 User = get_user_model()
 
 
-class Genre(ActivatorModel, BaseModel):
+class Genre(BaseModel):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
 
-class Movie(ActivatorModel, BaseModel):
+class Movie(BaseModel):
     title = models.CharField(max_length=200)
     description = models.TextField()
     poster = models.ImageField(upload_to="poster/")
