@@ -44,7 +44,7 @@ class MovieAdminClass(ModelAdmin):
     list_filter_submit = True  # Кнопка для применения фильтров
 
     filter_horizontal = ("genre",)
-    
+
     formfield_overrides = {
         ArrayField: {
             "widget": ArrayWidget,
@@ -54,9 +54,9 @@ class MovieAdminClass(ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdminClass(ModelAdmin):
-    list_display = ["user", "movie", "show_time", "seats"]
+    list_display = ["user", "movie", "seats"]
     search_fields = ("user__username", "movie__title")
-    list_filter = ("movie", "show_time")
+    list_filter = ("movie",)
 
     unfold_enabled = True
     compressed_fields = True

@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+    <h1>Мои бронирования</h1>
+    <ul>
+        <p>{{ form.non_field_errors }}</p>
+        {% for booking in bookings %}
+            <li>
+                {{ booking.movie.title }} — {{ booking.movie.show_time }} — Мест: {{ booking.seats }}
+                {% if booking.can_cancel %}
+                    <form action="{% url 'booking_cancel' booking.pk %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">Отменить бронирование</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>У вас нет бронирований</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

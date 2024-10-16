@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+<section id="genres">
+    <h2>Жанры</h2>
+    <p>В нашем кинотеатре вы найдете широкий выбор фильмов различных жанров. Мы рады предложить вам:</p>
+
+    <ul>
+        {% for genre in genres %}
+            <li><a href="{% url "genre_movies"  genre.pk %}">{{ genre.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <p>Неважно, какой жанр вам по душе, у нас есть что-то для каждого. Исследуйте наши коллекции и находите фильмы, которые вам понравятся!</p>
+</section>
+{% endblock %}

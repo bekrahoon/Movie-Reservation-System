@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+{% if q %}
+<h2>Результаты поиска для: "{{ q }}"</h2>
+{% else %}
+<h2>Результаты поиска для: "{{ genre_id }}"</h2>
+{% endif %}
+<ul>
+    {% for movie in movies %}
+    <a href="{% url 'movie_detail' movie.id %}"><img src="{{ movie.poster.url }}" alt="Постер фильма" width="200"></a> 
+    <li><a href="{% url 'movie_detail' movie.id %}">{{ movie.title }}</a> — {{ movie.description }}</li>
+    {% empty %}
+    <li>Ничего не найдено.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
