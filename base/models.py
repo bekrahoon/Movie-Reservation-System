@@ -9,16 +9,14 @@ from django_extensions.db.models import ActivatorModel
 User = get_user_model()
 
 
-class Genre(ActivatorModel,
-            BaseModel):
+class Genre(ActivatorModel, BaseModel):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
 
-class Movie(ActivatorModel,
-            BaseModel):
+class Movie(ActivatorModel, BaseModel):
     title = models.CharField(max_length=200)
     description = models.TextField()
     poster = models.ImageField(upload_to="poster/")
