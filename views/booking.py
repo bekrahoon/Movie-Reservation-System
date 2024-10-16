@@ -4,6 +4,14 @@ from base.forms import BookingForm
 from base.models import Genre, Movie, Booking
 from django.contrib.auth import views as auth_views
 from django.contrib import messages
+from json import JSONDecodeError
+from django.http import JsonResponse
+from base.serializers import BookingSerializer
+from rest_framework.parsers import JSONParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.mixins import ListModelMixin,UpdateModelMixin,RetrieveModelMixin
 
 
 @login_required
@@ -69,3 +77,39 @@ class CustomLoginView(auth_views.LoginView):
             "Пожалуйста, войдите или зарегистрируйтесь, чтобы получить доступ к этой странице.",
         )
         return super().get(request, *args, **kwargs)
+
+
+
+
+class BookingViewSet(
+        ListModelMixin,
+        RetrieveModelMixin,
+        UpdateModelMixin, 
+        viewsets.GenericViewSet
+        ):
+    """
+    A simple ViewSet for listing, retrieving and creating Bookings.
+    """
+    permission_classes = (IsAuthenticated,)
+    serializer_class = BookingSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the Bookings
+        for the currently authenticated user.
+        """
+        user = self.request.user
+        return Booking.objects.filter(user = user)
+
+    def create(self, request):
+        try:
+            data = JSONParser().parse(request)
+            serializer = BookingSerializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                movie = Movie.objects.get(pk = data["Movie"])
+                booking = movie.place_Booking(request.user, data["quantity"])
+                return Response(BookingSerializer(booking).data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except JSONDecodeError:
+            return JsonResponse({"result": "error","message": "Json decoding error"}, status= 400)

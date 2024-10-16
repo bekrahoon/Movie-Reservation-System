@@ -3,6 +3,10 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpRequest
 from base.models import Genre, Movie
 from django.db.models import Q
+from base.serializers import MovieSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets
+from rest_framework.mixins import ListModelMixin,RetrieveModelMixin
 
 
 def home(request: HttpRequest):
@@ -62,3 +66,17 @@ def search_movies(request):
         movies = Movie.objects.none()
     context = {"movies": movies, "q": q}
     return render(request, "movies/search_movies.html", context)
+
+
+
+class MovieViewSet(
+        ListModelMixin,
+        RetrieveModelMixin, 
+        viewsets.GenericViewSet
+        ):
+    """
+    A simple ViewSet for listing or retrieving Movies.
+    """
+    permission_classes = (IsAuthenticated,)
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
