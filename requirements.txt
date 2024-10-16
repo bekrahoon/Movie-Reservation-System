@@ -15,3 +15,8 @@ psycopg2==2.9.9
 python-decouple==3.8
 sqlparse==0.5.1
 tzdata==2024.2
+django-extensions==3.2.1
+django-filter==22.1
+djangorestframework-jsonapi==6.0.0
+inflection==0.5.1
+pytz==2022.6
