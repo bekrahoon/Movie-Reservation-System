@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_filters',
     "rest_framework",
-    'rest_framework.authtoken', #Used to enable token authentication
+    'rest_framework.authtoken',
     "base",
     "user_register",
 ]

@@ -39,6 +39,6 @@ class BookingSerializer(serializers.ModelSerializer):
         """
         movie = res.get("movie")
         seats = res.get("seats")
-        if not movie.check_stock(seats):
+        if not movie.check_available_seats(seats):
             raise NotEnoughAvailable_seatsException
         return res

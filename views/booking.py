@@ -14,6 +14,8 @@ from rest_framework.parsers import JSONParser
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from json import JSONDecodeError
+from rest_framework.viewsets import GenericViewSet
+from django.core.exceptions import ValidationError
 
 
 class BookingListView(LoginRequiredMixin, ListView):
@@ -107,13 +109,11 @@ class CustomLoginView(auth_views.LoginView):
         return super().get(request, *args, **kwargs)
 
 
-class BookingViewSet(
-    ListModelMixin, RetrieveModelMixin, UpdateModelMixin, viewsets.GenericViewSet
-):
+
+class BookingViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     """
     A simple ViewSet for listing, retrieving and creating Bookings.
     """
-
     permission_classes = (IsAuthenticated,)
     serializer_class = BookingSerializer
 
@@ -130,12 +130,18 @@ class BookingViewSet(
             data = JSONParser().parse(request)
             serializer = BookingSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
-                movie = Movie.objects.get(pk=data["Movie"])
-                booking = movie.place_Booking(request.user, data["quantity"])
-                return Response(BookingSerializer(booking).data)
+                movie = Movie.objects.get(pk=data["movie"])
+                # Проверка на существующее бронирование и его удаление
+                existing_booking = Booking.objects.filter(user=request.user, movie=movie)
+                if existing_booking.exists():
+                    existing_booking.delete()
+                booking = movie.place_booking(request.user, data["seats"])
+                return Response(BookingSerializer(booking).data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except JSONDecodeError:
             return JsonResponse(
                 {"result": "error", "message": "Json decoding error"}, status=400
             )
+        except ValidationError as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
