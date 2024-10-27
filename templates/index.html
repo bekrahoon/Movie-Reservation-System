@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static "style.css" %}">
+    <script src="https://js.stripe.com/v3/"></script>
     <title>Cinema 4d</title>
 </head>
 
@@ -18,7 +19,40 @@
 
     {% endblock content %}
 
+{% block javascript %}
+    <script>
+        var stripe = Stripe('YOUR_PUBLIC_STRIPE_KEY');
+        var paymentForm = document.getElementById('payment-form');
+    
+        paymentForm.addEventListener('submit', function(event) {
+          event.preventDefault();
+          fetch(paymentForm.action, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({})
+          }).then(function(response) {
+            return response.json();
+          }).then(function(session) {
+            return stripe.redirectToCheckout({ sessionId: session.id });
+          }).then(function(result) {
+            if (result.error) {
+              alert(result.error.message);
+            }
+          }).catch(function(error) {
+            console.error('Error:', error);
+          });
+        });
+      </script>
+{% endblock javascript %}
+
 </body>
 
 
 </html>
+
+
+
+

@@ -8,6 +8,7 @@ from django.conf import settings
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include('base.urls')),
+    path("", include('cart.urls')),
     path("", include('user_register.urls')),
     path('api/', include('api.urls')),
 

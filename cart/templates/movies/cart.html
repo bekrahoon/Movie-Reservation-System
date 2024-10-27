@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+<h2>Моя корзина</h2>
+<ul>
+  {% for item in items %}
+    <li><a href="{% url 'movie_detail' item.movie.id %}">{{ item.movie.title }}</a>
+      — {{ item.movie.show_time }} — Мест: {{ item.quantity }}
+    </li>
+    <form method="post" action="{% url 'remove-from-cart' item.id %}">
+      {% csrf_token %}
+      <button type="submit">Удалить</button>
+    </form>
+    <form action="{% url 'booking_create' movie.pk %}" method="POST">
+      {% csrf_token %}
+      <label for="seats">Количество мест:</label>
+      <input type="number" name="seats" min="1" required>
+      <button type="submit">Забронировать</button>
+  </form> 
+  {% endfor %}
+{% endblock %}

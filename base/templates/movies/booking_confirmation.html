@@ -1,0 +1,13 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block content %}
+    <h1>Бронирование подтверждено</h1>
+    <p>Ваше бронирование на фильм "{{ movie.title }}" подтверждено.</p>
+    <p>Вы можете перейти к оплате, чтобы завершить процесс бронирования.</p>
+    <form id="payment-form" action="{% url 'create-checkout-session' movie.pk %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Перейти к оплате</button>
+    </form>
+    <a href="{% url 'home' %}">Вернуться к списку фильмов</a>
+{% endblock content %}

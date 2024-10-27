@@ -18,6 +18,12 @@
         <input type="number" name="seats" min="1" required>
         <button type="submit">Забронировать</button>
     </form> 
+    <form action="{% url 'add-to-cart' movie.pk %}" method="POST">
+        {% csrf_token %}
+        <label for="seats">Количество мест:</label>
+        <input type="number" name="seats" min="1" required>
+        <button type="submit">Добавить в корзину</button>
+    </form>
 <a href="{% url 'home' %}">Вернуться к списку фильмов</a>
 {% endblock content %}
 
