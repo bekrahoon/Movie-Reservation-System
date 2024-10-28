@@ -1,9 +1,9 @@
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
-from user_register.forms import RegisterForm
 from django.views.generic import CreateView
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from user_register.forms import RegisterForm
 
 
 class RegisterView(CreateView):

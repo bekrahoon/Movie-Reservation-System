@@ -6,13 +6,18 @@
         <p>{{ form.non_field_errors }}</p>
         {% for booking in bookings %}
             <li>
-                {{ booking.movie.title }} — {{ booking.movie.show_time }} — Мест: {{ booking.seats }}
+                <a href="{% url 'movie_detail' booking.movie.id %}">{{ booking.movie.title }}</a>
+                — {{ booking.movie.show_time }} — Мест: {{ booking.seats }}
                 {% if booking.can_cancel %}
                     <form action="{% url 'booking_cancel' booking.pk %}" method="POST" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit">Отменить бронирование</button>
                     </form>
                 {% endif %}
+                <form id="payment-form" action="{% url 'create-checkout-session' booking.movie.pk %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">Перейти к оплате</button>
+                </form>
             </li>
         {% empty %}
             <li>У вас нет бронирований</li>

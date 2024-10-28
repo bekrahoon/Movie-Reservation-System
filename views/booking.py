@@ -1,21 +1,22 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import views as auth_views
 from django.contrib import messages
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import HttpResponse, JsonResponse
-from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, DeleteView, ListView
+from django.http import HttpResponse, JsonResponse
+from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from base.serializers import BookingSerializer
 from base.models import Genre, Movie, Booking
 from base.forms import BookingForm
 from rest_framework.mixins import ListModelMixin, UpdateModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import JSONParser
-from rest_framework import viewsets, status
-from rest_framework.response import Response
-from json import JSONDecodeError
 from rest_framework.viewsets import GenericViewSet
-from django.core.exceptions import ValidationError
+from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
+from rest_framework import status
+from json import JSONDecodeError
 
 
 class BookingListView(LoginRequiredMixin, ListView):
@@ -81,23 +82,31 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         form.instance.movie = movie
         seats = form.cleaned_data["seats"]
-
         if Booking.objects.filter(user=self.request.user, movie=movie).exists():
             form.add_error(
                 None,
                 "Вы уже забронировали этот фильм. Отмените бронирование, если хотите изменить.",
             )
             return self.form_invalid(form)
-
         if seats > movie.available_seats:
             form.add_error(
                 None, f"Недостаточно мест. Доступно: {movie.available_seats}"
             )
             return self.form_invalid(form)
-
         movie.available_seats -= seats  # Обновляем количество доступных мест
         movie.save()
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        # Перенаправляем на страницу подтверждения бронирования
+        return redirect('booking_confirmation', pk=movie.pk)
+
+
+class BookingConfirmationView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        movie = get_object_or_404(Movie, pk=self.kwargs['pk'])
+        return render(request, 'movies/booking_confirmation.html', {'movie': movie})
+
+
+
 
 
 class CustomLoginView(auth_views.LoginView):

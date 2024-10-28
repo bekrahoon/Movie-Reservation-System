@@ -4,26 +4,57 @@ https://roadmap.sh/projects/movie-reservation-system
 
 Table of  Contents:
 ====================
-1. [Run with env](#run-env)
+- [Movie-Reservation-System](#movie-reservation-system)
+- [Table of  Contents:](#table-of--contents)
+- [Movie Reservation System](#movie-reservation-system-1)
+  - [Описание](#описание)
+  - [Установка](#установка)
+  - [Docker](#docker)
 
 
-## Run with env
 
-```sh
-py  -m venv venv
 
-```
+# Movie Reservation System
 
-```sh
-source venv/bin/activate  
-# для Windows: venv/Scripts/activate
-```
+## Описание
+Система бронирования фильмов, позволяющая пользователям бронировать билеты на фильмы и оплачивать их онлайн. Поддерживает создание учетных записей пользователей, авторизацию и корзину для удобного бронирования нескольких билетов.
 
-```sh
-pip install -r requirements.txt
-```
+## Установка
 
-```sh
-python manage.py makemigrations
-python manage.py migrate
-```
+1. Клонируйте репозиторий:
+   ```sh
+   git clone https://github.com/bekrahoon/Movie-Reservation-System.git
+
+2. Перейдите в директорию проекта:
+    ```sh
+    cd Movie-Reservation-System
+
+3. Настройте файл `.env` с вашими переменными окружения:
+
+    ```plaintext
+    SECRET_KEY=ваш_секретный_ключ
+    STRIPE_SECRET_KEY=ваш_секретный_ключ_Stripe
+    STRIPE_PUBLIC_KEY=ваш_публичный_ключ_Stripe
+    DATABASE_NAME=имя_базы_данных
+    DATABASE_USER=пользователь_базы_данных
+    DATABASE_PASSWORD=пароль_базы_данных
+    DEBUG=True
+    ALLOWED_HOSTS=*
+
+## Docker
+
+1. Создайте и запустите контейнеры:
+    ```sh
+    docker-compose up --build
+
+2. Выполните миграции базы данных:
+    ```sh 
+    docker-compose exec web python manage.py makemigrations
+    docker-compose exec web python manage.py migrate
+
+3. Создайте суперпользователя:
+    ```sh
+    docker-compose exec web python manage.py createsuperuser
+
+4. Перейдите по адресу http://localhost:8000 для доступа к приложению.
+
