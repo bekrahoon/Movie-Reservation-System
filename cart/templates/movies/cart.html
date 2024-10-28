@@ -11,10 +11,8 @@
       {% csrf_token %}
       <button type="submit">Удалить</button>
     </form>
-    <form action="{% url 'booking_create' movie.pk %}" method="POST">
+    <form action="{% url 'booking_create' item.movie.pk %}" method="POST">
       {% csrf_token %}
-      <label for="seats">Количество мест:</label>
-      <input type="number" name="seats" min="1" required>
       <button type="submit">Забронировать</button>
   </form> 
   {% endfor %}

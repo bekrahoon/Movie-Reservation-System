@@ -4,16 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Войти</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'login/style/style.css' %}">
 </head>
 <body>
-    <h1>Войти</h1>
     <form method="POST">
         {% csrf_token %}
+        <h1>Войти</h1>
         {{ form.as_p }}
         <button type="submit">Войти</button>
     </form>
-    <div><span>Еще нет аккаунта?
-    <button><a href="{% url "register" %}">Зарегестрироваться</a></button></span></div>
-    <button><a href="{% url "home" %}">вернуться на главную</a></button>
+    <div>
+        <span>Еще нет аккаунта? 
+            <button class="link-button" onclick="window.location.href='{% url 'register' %}'">Зарегестрироваться</button>
+        </span>
+    </div>
+    <button><a href="{% url 'home' %}">Вернуться на главную</a></button>
 </body>
 </html>
