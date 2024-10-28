@@ -32,14 +32,12 @@ Table of  Contents:
 3. Настройте файл `.env` с вашими переменными окружения:
 
     ```plaintext
-    SECRET_KEY=ваш_секретный_ключ
-    STRIPE_SECRET_KEY=ваш_секретный_ключ_Stripe
-    STRIPE_PUBLIC_KEY=ваш_публичный_ключ_Stripe
-    DATABASE_NAME=имя_базы_данных
-    DATABASE_USER=пользователь_базы_данных
-    DATABASE_PASSWORD=пароль_базы_данных
-    DEBUG=True
-    ALLOWED_HOSTS=*
+    DEBUG = True
+    ALLOWED_HOSTS = "*"
+    SECRET_KEY = your_SECRET_KEY
+    DATABASE_NAME = your_DATABASE_NAME
+    DATABASE_USER = your_DATABASE_USER
+    DATABASE_PASSWORD = your_DATABASE_PASSWORD
 
 ## Docker
 
