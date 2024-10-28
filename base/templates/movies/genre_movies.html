@@ -12,6 +12,7 @@
                 <div class="movie-info">
                     <a href="{% url 'movie_detail' movie.id %}" class="movie-title">{{ movie.title }}</a>
                     <p class="movie-description">{{ movie.description }}</p>
+                    <p class="movie-price">Стоимость: {{ movie.price }} $</p>
                 </div>
             </li>
         {% empty %}
@@ -70,6 +71,18 @@
     .movie-description {
         color: #555; /* Цвет описания фильма */
     }
+    .movie-price {
+        font-size: 1.2em;       /* Increases font size slightly */
+        font-weight: bold;      /* Makes the text bold */
+        color: #333;            /* Dark gray color for text */
+        padding: 8px 12px;      /* Adds padding around the text */
+        background-color: #f9f9f9; /* Light background color */
+        border: 1px solid #ddd; /* Light border around the box */
+        border-radius: 5px;     /* Softens the corners */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds subtle shadow */
+        display: inline-block;  /* Makes the element fit content */
+    }
+    
 </style>
 <script>
     document.addEventListener("DOMContentLoaded", function() {

@@ -120,15 +120,7 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
         movie.save()
         response = super().form_valid(form)
         # Перенаправляем на страницу подтверждения бронирования
-        return redirect('booking_confirmation', pk=movie.pk)
-
-
-class BookingConfirmationView(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-        movie = get_object_or_404(Movie, pk=self.kwargs['pk'])
-        return render(request, 'movies/booking_confirmation.html', {'movie': movie})
-
-
+        return redirect('booking_list')
 
 
 

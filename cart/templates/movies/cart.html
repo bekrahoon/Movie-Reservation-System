@@ -8,7 +8,7 @@
             <li class="cart-item">
                 <a href="{% url 'movie_detail' item.movie.id %}" class="movie-title">{{ item.movie.title }}</a>
                 — {{ item.movie.show_time }} — Мест: {{ item.quantity }}
-                
+                <p class="movie-price">Общая стоимость: {{ item.movie.price }} $</p>
                 <div class="cart-item-actions">
                     <form method="post" action="{% url 'remove-from-cart' item.id %}" class="remove-form">
                         {% csrf_token %}
@@ -25,14 +25,26 @@
         {% endfor %}
     </ul>
 </div>
+
 <style>
-  .cart-container {
+.movie-price {
+    font-size: 1.2em;
+    color: #34495e;
+    font-weight: 600;
+    background-color: #eef2f5;
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.cart-container {
     max-width: 800px;
     margin: 40px auto;
     padding: 20px;
     background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .cart-title {
@@ -42,65 +54,78 @@
 }
 
 .cart-items-list {
-    list-style-type: none; /* Убираем маркеры списка */
-    padding: 0; /* Убираем отступы */
+    list-style-type: none;
+    padding: 0;
 }
 
 .cart-item {
-    display: flex; /* Используем flexbox для выравнивания элементов */
-    justify-content: space-between; /* Распределяем элементы по краям */
-    align-items: center; /* Выравниваем по вертикали */
-    margin-bottom: 15px; /* Отступ между элементами списка */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: box-shadow 0.3s ease;
+}
+
+.cart-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .movie-title {
-    font-size: 1.5em;
-    color: #007BFF; /* Цвет заголовка фильма */
-    text-decoration: none; /* Убираем подчеркивание */
+    font-size: 1.4em;
+    color: #0056b3;
+    text-decoration: none;
+    margin-bottom: 5px;
 }
 
 .movie-title:hover {
-    text-decoration: underline; /* Подчеркивание при наведении */
+    text-decoration: underline;
 }
 
 .cart-item-actions {
-    display: flex; /* Используем flexbox для выравнивания кнопок */
+    display: flex;
+    margin-top: 10px;
 }
 
 .remove-button,
 .booking-button {
-    padding: 5px 10px;
+    padding: 6px 12px;
     font-size: 0.9em;
     color: #fff;
     border: none;
     border-radius: 5px;
-    margin-left: 10px; /* Отступ между кнопками */
+    margin-right: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .remove-button {
-    background-color: #dc3545; /* Красный цвет для удаления */
+    background-color: #e74c3c;
 }
 
 .remove-button:hover {
-    background-color: #c82333; /* Темнее при наведении */
+    background-color: #c0392b;
 }
 
 .booking-button {
-    background-color: #28a745; /* Зеленый цвет для бронирования */
+    background-color: #2ecc71;
 }
 
 .booking-button:hover {
-    background-color: #218838; /* Темнее при наведении */
+    background-color: #27ae60;
 }
 </style>
+
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
     const removeButtons = document.querySelectorAll('.remove-button');
 
     removeButtons.forEach(button => {
         button.addEventListener('click', function(event) {
             if (!confirm('Вы уверены, что хотите удалить этот элемент из корзины?')) {
-                event.preventDefault(); // Отменяем действие, если пользователь не подтвердил
+                event.preventDefault();
             }
         });
     });

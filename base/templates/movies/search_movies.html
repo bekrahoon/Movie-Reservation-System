@@ -16,7 +16,9 @@
                 </a>
                 <div class="movie-info">
                     <a href="{% url 'movie_detail' movie.id %}" class="movie-title">{{ movie.title }}</a> — {{ movie.description }}
+                    <p class="movie-price">Стоимость: {{ movie.price }} $</p>
                 </div>
+
             </li>
         {% empty %}
             <li>Ничего не найдено.</li>
@@ -24,6 +26,12 @@
     </ul>
 </div>
 <style>
+    .movie-price {
+        font-size: 1.1em;               /* Standard font size */
+        color: #333;                    /* Neutral dark color for text */
+        font-weight: 500;               /* Moderate font weight */
+        margin: 5px 0;                  /* Small margin for spacing */
+    }
     .search-results-container {
         max-width: 800px;
         margin: 40px auto;
