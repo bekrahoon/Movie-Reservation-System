@@ -1,17 +1,90 @@
 {% extends "index.html" %}
 {% load static %}
 {% block content %}
-{% if q %}
-<h2>Результаты поиска для: "{{ q }}"</h2>
-{% else %}
-<h2>Результаты поиска для: "{{ genre_id }}"</h2>
-{% endif %}
-<ul>
-    {% for movie in movies %}
-    <a href="{% url 'movie_detail' movie.id %}"><img src="{{ movie.poster.url }}" alt="Постер фильма" width="200"></a> 
-    <li><a href="{% url 'movie_detail' movie.id %}">{{ movie.title }}</a> — {{ movie.description }}</li>
-    {% empty %}
-    <li>Ничего не найдено.</li>
-    {% endfor %}
-</ul>
+<div class="search-results-container">
+    {% if q %}
+        <h2 class="search-title">Результаты поиска для: "<strong>{{ q }}</strong>"</h2>
+    {% else %}
+        <h2 class="search-title">Результаты поиска для жанра: "<strong>{{ genre_id }}</strong>"</h2>
+    {% endif %}
+    
+    <ul class="movies-list">
+        {% for movie in movies %}
+            <li class="movie-item">
+                <a href="{% url 'movie_detail' movie.id %}" class="movie-link">
+                    <img src="{{ movie.poster.url }}" alt="Постер фильма" class="movie-poster" width="200">
+                </a>
+                <div class="movie-info">
+                    <a href="{% url 'movie_detail' movie.id %}" class="movie-title">{{ movie.title }}</a> — {{ movie.description }}
+                </div>
+            </li>
+        {% empty %}
+            <li>Ничего не найдено.</li>
+        {% endfor %}
+    </ul>
+</div>
+<style>
+    .search-results-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .search-title {
+        font-size: 2em;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    
+    .movies-list {
+        list-style-type: none; /* Убираем маркеры списка */
+        padding: 0; /* Убираем отступы */
+    }
+    
+    .movie-item {
+        display: flex; /* Используем flexbox для выравнивания элементов */
+        margin-bottom: 20px; /* Отступ между фильмами */
+    }
+    
+    .movie-link {
+        margin-right: 15px; /* Отступ между постером и информацией о фильме */
+    }
+    
+    .movie-poster {
+        border-radius: 5px; /* Закругление углов постера */
+    }
+    
+    .movie-info {
+        flex-grow: 1; /* Позволяет этому блоку занимать оставшееся пространство */
+    }
+    
+    .movie-title {
+        font-size: 1.5em;
+        color: #007BFF; /* Цвет заголовка фильма */
+        text-decoration: none; /* Убираем подчеркивание */
+    }
+    
+    .movie-title:hover {
+        text-decoration: underline; /* Подчеркивание при наведении */
+    }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const moviePosters = document.querySelectorAll('.movie-poster');
+    
+        moviePosters.forEach(poster => {
+            poster.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)'; // Увеличиваем размер постера
+                this.style.transition = 'transform 0.3s ease'; // Плавная анимация
+            });
+    
+            poster.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)'; // Возвращаем размер постера
+            });
+        });
+    });
+</script>
 {% endblock %}

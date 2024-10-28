@@ -1,26 +1,120 @@
 {% extends "index.html" %}
 {% load static %}
 {% block content %}
-    <h1>Мои бронирования</h1>
-    <ul>
-        <p>{{ form.non_field_errors }}</p>
-        {% for booking in bookings %}
-            <li>
-                <a href="{% url 'movie_detail' booking.movie.id %}">{{ booking.movie.title }}</a>
-                — {{ booking.movie.show_time }} — Мест: {{ booking.seats }}
-                {% if booking.can_cancel %}
-                    <form action="{% url 'booking_cancel' booking.pk %}" method="POST" style="display:inline;">
+    <div class="bookings-container">
+        <h1 class="bookings-title">Мои бронирования</h1>
+        <p class="error-message">{{ form.non_field_errors }}</p>
+        <ul class="bookings-list">
+            {% for booking in bookings %}
+                <li class="booking-item">
+                    <a href="{% url 'movie_detail' booking.movie.id %}" class="booking-movie-title">{{ booking.movie.title }}</a>
+                    — {{ booking.movie.show_time }} — Мест: {{ booking.seats }}
+                    {% if booking.can_cancel %}
+                        <form action="{% url 'booking_cancel' booking.pk %}" method="POST" class="cancel-form" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="cancel-button">Отменить бронирование</button>
+                        </form>
+                    {% else %}
+                        <form action="{% url 'booking_delete' booking.pk %}" method="POST" class="cancel-form" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="cancel-button">Удалить бронирование</button>
+                        </form>
+                    {% endif %}
+                    <form id="payment-form" action="{% url 'create-checkout-session' booking.movie.pk %}" method="POST" class="payment-form">
                         {% csrf_token %}
-                        <button type="submit">Отменить бронирование</button>
+                        <button type="submit" class="payment-button">Перейти к оплате</button>
                     </form>
-                {% endif %}
-                <form id="payment-form" action="{% url 'create-checkout-session' booking.movie.pk %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit">Перейти к оплате</button>
-                </form>
-            </li>
-        {% empty %}
-            <li>У вас нет бронирований</li>
-        {% endfor %}
-    </ul>
+                </li>
+            {% empty %}
+                <li>У вас нет бронирований</li>
+            {% endfor %}
+        </ul>
+    </div>
+<style>
+    .bookings-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .bookings-title {
+        font-size: 2em;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    
+    .error-message {
+        color: red; /* Цвет для ошибок */
+    }
+    
+    .bookings-list {
+        list-style-type: none; /* Убираем маркеры списка */
+        padding: 0; /* Убираем отступы */
+    }
+    
+    .booking-item {
+        margin-bottom: 15px; /* Отступ между элементами списка */
+    }
+    
+    .booking-movie-title {
+        text-decoration: none;
+        color: #007BFF; /* Цвет ссылки */
+    }
+    
+    .booking-movie-title:hover {
+        text-decoration: underline; /* Подчеркивание при наведении */
+    }
+    
+    .cancel-button,
+    .payment-button {
+        padding: 5px 10px;
+        font-size: 0.9em;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    .cancel-button {
+        background-color: #dc3545; /* Красный цвет для отмены */
+    }
+    
+    .cancel-button:hover {
+        background-color: #c82333; /* Темнее при наведении */
+    }
+    
+    .payment-button {
+        background-color: #28a745; /* Зеленый цвет для оплаты */
+    }
+    
+    .payment-button:hover {
+        background-color: #218838; /* Темнее при наведении */
+    }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const cancelButtons = document.querySelectorAll('.cancel-button');
+        
+        cancelButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (!confirm('Вы уверены, что хотите отменить это бронирование?')) {
+                    event.preventDefault(); // Отменяем действие, если пользователь не подтвердил
+                }
+            });
+        });
+    
+        const paymentButtons = document.querySelectorAll('.payment-button');
+    
+        paymentButtons.forEach(button => {
+            button.addEventListener('click', function() {
+
+                this.style.cursor = 'not-allowed'; // Изменение курсора
+            });
+        });
+    });
+</script>
 {% endblock %}

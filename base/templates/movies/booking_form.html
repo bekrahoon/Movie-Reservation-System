@@ -1,12 +1,83 @@
 {% extends "index.html" %}
 {% load static %}
 {% block content %}
-    <h1>Забронировать фильм: {{ movie.title }}</h1>
+    <div class="booking-container">
+        <h1 class="booking-title">Забронировать фильм: <strong>{{ movie.title }}</strong></h1>
+        
+        <form method="POST" class="booking-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="booking-button">Забронировать</button>
+        </form>
+        
+        <a class="booking-link" href="{% url 'booking_list' %}">
+            <button class="view-bookings-button">ЗАБРОНИРОВАННЫЕ</button>
+        </a>
+    </div>
+
+<style>
+    .booking-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
     
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Забронировать</button>
-    </form>
-    <a class = "booking" href="{% url "booking_list" %}"><button>ЗАБРОНИРОВАННЫЕ</button></a>
+    .booking-title {
+        font-size: 2em;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    
+    .booking-form {
+        margin-bottom: 20px;
+    }
+    
+    .booking-button {
+        padding: 10px 20px;
+        font-size: 1em;
+        color: #fff;
+        background-color: #28a745; /* Цвет кнопки */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    .booking-button:hover {
+        background-color: #218838; /* Цвет кнопки при наведении */
+    }
+    
+    .booking-link {
+        text-decoration: none; /* Убираем подчеркивание */
+    }
+    
+    .view-bookings-button {
+        padding: 10px 20px;
+        font-size: 1em;
+        color: #fff;
+        background-color: #007BFF; /* Цвет кнопки "Забронированные" */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    .view-bookings-button:hover {
+        background-color: #0056b3; /* Цвет кнопки при наведении */
+    }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const bookingButton = document.querySelector('.booking-button');
+    
+        bookingButton.addEventListener('click', function() {
+
+            this.style.cursor = 'not-allowed'; // Изменение курсора
+        });
+    });
+</script>
 {% endblock content %}

@@ -24,6 +24,8 @@ class Movie(BaseModel):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     available_seats = models.PositiveIntegerField()
     
+    def can_cancel(self):
+        return self.show_time > timezone.now()
     
     def check_available_seats(self, booking_seats):
         return booking_seats <= self.available_seats

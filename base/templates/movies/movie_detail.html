@@ -1,29 +1,133 @@
 {% extends "index.html" %}
 {% load static %}
 {% block content %}
-    <h1>{{ movie.title }}</h1>
-    <img src="{{ movie.poster.url }}" alt="Постер фильма" width="300">
-    <p>{{ movie.description }}</p>
-    <p>Жанры: {{ movie.genre.all|join:", " }}</p>
-    <p>Время показа: {{ movie.show_time }}</p>
-    {% if  movie.available_seats != 0 %}
-    <p>Колличество свободных мест: {{ movie.available_seats }}</p>
+<div class="movie-detail-container">
+    <h1 class="movie-title">{{ movie.title }}</h1>
+    <img src="{{ movie.poster.url }}" alt="Постер фильма" class="movie-poster" width="300">
+    <p class="movie-description">{{ movie.description }}</p>
+    <p class="movie-genres">Жанры: {{ movie.genre.all|join:", " }}</p>
+    <p class="movie-show-time">Время показа: {{ movie.show_time }}</p>
+    
+    {% if movie.available_seats != 0 %}
+        <p class="available-seats">Количество свободных мест: {{ movie.available_seats }}</p>
     {% else %}
-    <p style="color: red">Нет доступных мест</p>
+        <p class="no-seats" style="color: red">Нет доступных мест</p>
     {% endif %}
+    
     <h2>Бронирование</h2>
-    <form action="{% url 'booking_create' movie.pk %}" method="POST">
+    <form action="{% url 'booking_create' movie.pk %}" method="POST" class="booking-form">
         {% csrf_token %}
         <label for="seats">Количество мест:</label>
-        <input type="number" name="seats" min="1" required>
-        <button type="submit">Забронировать</button>
+        <input type="number" name="seats" min="1" value="1" required class="seats-input">
+        <button type="submit" class="booking-button">Забронировать</button>
     </form> 
-    <form action="{% url 'add-to-cart' movie.pk %}" method="POST">
+    
+    <form action="{% url 'add-to-cart' movie.pk %}" method="POST" class="cart-form">
         {% csrf_token %}
         <label for="seats">Количество мест:</label>
-        <input type="number" name="seats" min="1" required>
-        <button type="submit">Добавить в корзину</button>
+        <input type="number" name="seats" min="1" value="1" required class="seats-input">
+        <button type="submit" class="cart-button">Добавить в корзину</button>
     </form>
-<a href="{% url 'home' %}">Вернуться к списку фильмов</a>
-{% endblock content %}
 
+    <a href="{% url 'home' %}" class="back-link">Вернуться к списку фильмов</a>
+</div>
+<style>
+    .movie-detail-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .movie-title {
+        font-size: 2em;
+        color: #333;
+    }
+    
+    .movie-poster {
+        border-radius: 5px; /* Закругление углов постера */
+    }
+    
+    .movie-description {
+        margin: 15px 0;
+        color:  #111;
+
+    }
+    
+    .movie-genres,
+    .movie-show-time,
+    .available-seats,
+    .no-seats {
+        font-size: 1.1em;
+        color:  #158;
+
+    }
+    
+    .booking-form,
+    .cart-form {
+        margin-top: 20px; /* Отступ сверху для форм */
+    }
+    
+    .seats-input {
+        width: 60px; /* Ширина поля ввода количества мест */
+        margin-right: 10px; /* Отступ между полем ввода и кнопкой */
+    }
+    
+    .booking-button,
+    .cart-button {
+        padding: 5px 10px;
+        font-size: 0.9em;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+    }
+    
+    .booking-button {
+        background-color: #28a745; /* Зеленый цвет для бронирования */
+    }
+    
+    .booking-button:hover {
+        background-color: #218838; /* Темнее при наведении */
+    }
+    
+    .cart-button {
+        background-color: #007BFF; /* Синий цвет для добавления в корзину */
+    }
+    
+    .cart-button:hover {
+        background-color: #0056b3; /* Темнее при наведении */
+    }
+    
+    .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        text-decoration: none;
+        color: #007BFF; /* Цвет ссылки */
+    }
+    
+    .back-link:hover {
+        text-decoration: underline; /* Подчеркивание при наведении */
+    }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const bookingButtons = document.querySelectorAll('.booking-button');
+        
+        bookingButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.cursor = 'not-allowed'; // Изменение курсора
+            });
+        });
+    
+        const cartButtons = document.querySelectorAll('.cart-button');
+    
+        cartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.cursor = 'not-allowed'; // Изменение курсора
+            });
+        });
+    });
+</script>
+{% endblock content %}

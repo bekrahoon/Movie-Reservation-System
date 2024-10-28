@@ -1,19 +1,109 @@
 {% extends "index.html" %}
 {% load static %}
 {% block content %}
-<h2>Моя корзина</h2>
-<ul>
-  {% for item in items %}
-    <li><a href="{% url 'movie_detail' item.movie.id %}">{{ item.movie.title }}</a>
-      — {{ item.movie.show_time }} — Мест: {{ item.quantity }}
-    </li>
-    <form method="post" action="{% url 'remove-from-cart' item.id %}">
-      {% csrf_token %}
-      <button type="submit">Удалить</button>
-    </form>
-    <form action="{% url 'booking_create' item.movie.pk %}" method="POST">
-      {% csrf_token %}
-      <button type="submit">Забронировать</button>
-  </form> 
-  {% endfor %}
+<div class="cart-container">
+    <h2 class="cart-title">Моя корзина</h2>
+    <ul class="cart-items-list">
+        {% for item in items %}
+            <li class="cart-item">
+                <a href="{% url 'movie_detail' item.movie.id %}" class="movie-title">{{ item.movie.title }}</a>
+                — {{ item.movie.show_time }} — Мест: {{ item.quantity }}
+                
+                <div class="cart-item-actions">
+                    <form method="post" action="{% url 'remove-from-cart' item.id %}" class="remove-form">
+                        {% csrf_token %}
+                        <button type="submit" class="remove-button">Удалить</button>
+                    </form>
+                    <form action="{% url 'booking_create' item.movie.pk %}" method="POST" class="booking-form">
+                        {% csrf_token %}
+                        <button type="submit" class="booking-button">Забронировать</button>
+                    </form> 
+                </div>
+            </li>
+        {% empty %}
+            <li>Ваша корзина пуста.</li>
+        {% endfor %}
+    </ul>
+</div>
+<style>
+  .cart-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart-title {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.cart-items-list {
+    list-style-type: none; /* Убираем маркеры списка */
+    padding: 0; /* Убираем отступы */
+}
+
+.cart-item {
+    display: flex; /* Используем flexbox для выравнивания элементов */
+    justify-content: space-between; /* Распределяем элементы по краям */
+    align-items: center; /* Выравниваем по вертикали */
+    margin-bottom: 15px; /* Отступ между элементами списка */
+}
+
+.movie-title {
+    font-size: 1.5em;
+    color: #007BFF; /* Цвет заголовка фильма */
+    text-decoration: none; /* Убираем подчеркивание */
+}
+
+.movie-title:hover {
+    text-decoration: underline; /* Подчеркивание при наведении */
+}
+
+.cart-item-actions {
+    display: flex; /* Используем flexbox для выравнивания кнопок */
+}
+
+.remove-button,
+.booking-button {
+    padding: 5px 10px;
+    font-size: 0.9em;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    margin-left: 10px; /* Отступ между кнопками */
+}
+
+.remove-button {
+    background-color: #dc3545; /* Красный цвет для удаления */
+}
+
+.remove-button:hover {
+    background-color: #c82333; /* Темнее при наведении */
+}
+
+.booking-button {
+    background-color: #28a745; /* Зеленый цвет для бронирования */
+}
+
+.booking-button:hover {
+    background-color: #218838; /* Темнее при наведении */
+}
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const removeButtons = document.querySelectorAll('.remove-button');
+
+    removeButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            if (!confirm('Вы уверены, что хотите удалить этот элемент из корзины?')) {
+                event.preventDefault(); // Отменяем действие, если пользователь не подтвердил
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
