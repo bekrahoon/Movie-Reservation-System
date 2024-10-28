@@ -15,7 +15,8 @@
                     <a href="{% url 'movie_detail' movie.id %}" class="movie-title">{{ movie.title }}</a>
                     - Жанры: {{ movie.genre.all|join:", " }}
                     - Время показа: {{ movie.show_time }}
-                    
+                    <p class="movie-price">Стоимость: {{ movie.price }} $</p>
+
                     {% if movie.available_seats != 0 %}
                         <form action="{% url 'booking_create' movie.pk %}" method="POST" class="booking-form">
                             {% csrf_token %}
@@ -37,6 +38,13 @@
     </ul>   
 </div>
 <style>
+    .movie-price {
+        font-size: 1.1em;               /* Standard font size */
+        color: #333;                    /* Neutral dark color for text */
+        font-weight: 500;               /* Moderate font weight */
+        margin: 5px 0;                  /* Small margin for spacing */
+    }
+    
     .movies-container {
         max-width: 800px;
         margin: 40px auto;

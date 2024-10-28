@@ -20,10 +20,6 @@
                             <button type="submit" class="cancel-button">Удалить бронирование</button>
                         </form>
                     {% endif %}
-                    <form id="payment-form" action="{% url 'create-checkout-session' booking.movie.pk %}" method="POST" class="payment-form">
-                        {% csrf_token %}
-                        <button type="submit" class="payment-button">Перейти к оплате</button>
-                    </form>
                 </li>
             {% empty %}
                 <li>У вас нет бронирований</li>
