@@ -125,8 +125,6 @@
     
         cartButtons.forEach(button => {
             button.addEventListener('click', function() {
-                this.innerHTML = 'Добавляется...'; // Изменение текста кнопки при нажатии
-                this.disabled = true; // Отключение кнопки
                 this.style.cursor = 'not-allowed'; // Изменение курсора
             });
         });

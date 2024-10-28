@@ -14,6 +14,11 @@
                             {% csrf_token %}
                             <button type="submit" class="cancel-button">Отменить бронирование</button>
                         </form>
+                    {% else %}
+                        <form action="{% url 'booking_delete' booking.pk %}" method="POST" class="cancel-form" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="cancel-button">Удалить бронирование</button>
+                        </form>
                     {% endif %}
                     <form id="payment-form" action="{% url 'create-checkout-session' booking.movie.pk %}" method="POST" class="payment-form">
                         {% csrf_token %}

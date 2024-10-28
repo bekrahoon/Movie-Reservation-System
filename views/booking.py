@@ -36,7 +36,7 @@ class BookingListView(LoginRequiredMixin, ListView):
         return context
 
 
-class BookingDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class BookingCancelView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Booking
     template_name = (
         "movies/booking_confirm_delete.html"  # Шаблон подтверждения удаления
@@ -57,6 +57,29 @@ class BookingDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             movie = booking.movie
             movie.available_seats += booking.seats
             movie.save()  # Сохраняем изменения в фильме
+
+        return super().delete(request, *args, **kwargs)
+
+    def handle_no_permission(self) -> HttpResponse:
+        return HttpResponse("You are not allowed to cancel this booking!")
+    
+class BookingDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Booking
+    success_url = reverse_lazy("booking_list")
+    login_url = "login"
+
+    def test_func(self) -> bool:
+        # Проверяем, что пользователь является владельцем бронирования
+        booking = self.get_object()
+        return self.request.user == booking.user
+
+    def delete(self, request, *args, **kwargs):
+        # Логика отмены бронирования
+        booking = self.get_object()
+
+        # Возвращаем количество мест в доступные места для фильма
+        movie = booking.movie
+        movie.save()  # Сохраняем изменения в фильме
 
         return super().delete(request, *args, **kwargs)
 

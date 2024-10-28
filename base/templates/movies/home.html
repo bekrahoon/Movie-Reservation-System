@@ -5,6 +5,7 @@
     <h1 class="movies-title">Список фильмов</h1>
     <ul class="movies-list">
         {% for movie in movies %}
+        {% if movie.can_cancel %}
             <li class="movie-item">
                 <a href="{% url 'movie_detail' movie.id %}" class="movie-link">
                     <img src="{{ movie.poster.url }}" alt="Постер фильма" class="movie-poster" width="200">
@@ -29,6 +30,7 @@
                     {% endif %}
                 </div>
             </li>
+            {% endif %}
         {% empty %}
             <li>Фильмов нет</li>
         {% endfor %}

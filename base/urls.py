@@ -1,7 +1,7 @@
 from django.conf.urls.static import static
 from django.conf import settings
 from django.urls import path
-from views.booking import BookingConfirmationView, BookingCreateView, BookingListView, BookingDeleteView
+from views.booking import BookingConfirmationView, BookingCreateView, BookingListView, BookingDeleteView, BookingCancelView
 from views.views import (
     AboutUsView,
     GenreMoviesView,
@@ -21,11 +21,13 @@ urlpatterns = [
         "bookings/<int:pk>/create/", BookingCreateView.as_view(), name="booking_create"
     ),
     path(
-        "bookings/<int:pk>/cancel/", BookingDeleteView.as_view(), name="booking_cancel"
+        "bookings/<int:pk>/cancel/", BookingCancelView.as_view(), name="booking_cancel"
     ),
     path('booking-confirmation/<int:pk>/', BookingConfirmationView.as_view(), name='booking_confirmation'),
     path("about_us/", AboutUsView.as_view(), name="about_us"),
     path("genres/", GenreListView.as_view(), name="genres"),
+    path("bookings/<int:pk>/delete/",  BookingDeleteView.as_view(), name="booking_delete"),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
