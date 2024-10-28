@@ -1,51 +1,139 @@
 {% load static %}
 <header>
     <div class="header_menu">
-        <!-- Это проверка на изменение ветки -->
-            <div class="logo">
-                <div class="logo-img">
-                    <a href="{% url "home" %}"><img src="{% static "img/логотипы/Cinema-4D-Logo.png" %}" alt="LOGO"></a>
-                </div>
-                <div class="logo-text">
-                <a href="{% url "home" %}">CINEMA 4D</a>
-                </div>
+        <div class="logo">
+            <div class="logo-img">
+                <a href="{% url 'home' %}"><img src="{% static 'img/логотипы/Cinema-4D-Logo.png' %}" alt="LOGO"></a>
             </div>
+            <div class="logo-text">
+                <a class="logo-link" href="{% url 'home' %}">CINEMA 4D</a>
+            </div>
+        </div>
         <div class="menu">
-            <lu>
-                <li><a href="{% url "home" %}">ГЛАВНАЯ</a></li>
-                <li><a href="{% url "about_us" %}">О НАС</a></li>
-                <li><a href="{% url "genres" %}">ЖАНРЫ</a></li>
+            <ul>
+                <li><a href="{% url 'home' %}">ГЛАВНАЯ</a></li>
+                <li><a href="{% url 'about_us' %}">О НАС</a></li>
+                <li><a href="{% url 'genres' %}">ЖАНРЫ</a></li>
                 {% if request.user.is_superuser %}
-                    <li><a href="{% url "admin:index" %}">ADMIN PANEL</a></li>
+                    <li><a href="{% url 'admin:index' %}">ADMIN PANEL</a></li>
                 {% endif %}
-            </lu>
+            </ul>
         </div>
         <form method="GET" action="{% url 'search_movies' %}">
-            <input type="text" name="q" placeholder="Поиск фильмов...">
-            <button type="submit">Искать</button>
+            <input type="text" name="q" placeholder="Поиск фильмов..." class="search-input">
+            <button type="submit" class="search-button">Искать</button>
         </form>
         <div class="book">
             <div class="book-call">
-                <img src="{% static "img/call.png" %}" alt="call">
-                <a href="#">+996 555 740 423</a>
+                <img src="{% static 'img/call.png' %}" alt="call">
+                <a href="#" style='color: #000;'>+996 555 740 423</a>
             </div>
-            <div class="book-button">``
-                <a href="{% url "cart" %}"><button>Корзина</button></a>
+            <div class="book-button">
+                <a href="{% url 'cart' %}"><button>Корзина</button></a>
             </div>
-            <div class="book-button">``
-                <a href="{% url "booking_list" %}"><button>ЗАБРОНИРОВАННЫЕ</button></a>
+            <div class="book-button">
+                <a href="{% url 'booking_list' %}"><button>ЗАБРОНИРОВАННЫЕ</button></a>
             </div>
         </div>
-    
+
         <div class="sign">
-            {% if  user.is_authenticated %}
-                <a href="{% url "logout" %}"><button>Выйти</button></a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}"><button>Выйти</button></a>
             {% else %}
-                <a href="{% url "register" %}"><button>Зарегестрироваться</button></a>
-                <a href="{% url "login" %}"><button>Войти</button></a>
+                <a href="{% url 'register' %}"><button>Зарегестрироваться</button></a>
+                <a href="{% url 'login' %}"><button>Войти</button></a>
             {% endif %}
         </div>
-    
+
     </div>
     <hr class="line">
-    </header>
+</header>
+
+<style>
+    .header_menu {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+    }
+
+    .logo-img img {
+        height: 50px; /* Adjust logo size */
+    }
+
+    .menu ul {
+        list-style-type: none;
+        display: flex;
+        margin: 0;
+        padding: 0;
+    }
+
+    .menu li {
+        margin-right: 20px; /* Space between menu items */
+    }
+
+    .menu a {
+        text-decoration: none;
+        color: #333;
+    }
+
+    .menu a:hover {
+        color: #007BFF; /* Change color on hover */
+    }
+
+    .search-input {
+        padding: 5px;
+        margin-right: 10px; /* Space between input and button */
+    }
+
+    .search-button {
+        padding: 5px 10px;
+    }
+
+    .book {
+        display: flex;
+        align-items: center;
+    }
+
+    .book-call img {
+        width: 20px; /* Adjust call icon size */
+        margin-right: 5px; /* Space between icon and number */
+    }
+
+    .book-button {
+        margin-left: 10px; /* Space between buttons */
+    }
+
+    .line {
+        border-top: 1px solid #ccc; /* Style for the horizontal line */
+    }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const menuItems = document.querySelectorAll('.menu a');
+
+    menuItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.classList.add('hover');
+        });
+
+        item.addEventListener('mouseleave', function() {
+            this.classList.remove('hover');
+        });
+    });
+});
+</script>
+
+<style>
+.hover {
+    text-decoration: underline; /* Underline effect on hover */
+}
+</style>

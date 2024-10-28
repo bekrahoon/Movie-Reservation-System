@@ -1,144 +1,129 @@
-*{
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box; /* Добавлено для более предсказуемого поведения элементов */
 }
-body{
-    background-image: url(img/walpaper.png);
+
+body {
+    background-image: url(img/1.jpg);
     background-size: cover;
-    height: 100%;
+    height: 100vh; /* Изменено на 100vh для корректного отображения */
     width: 100%;
+    font-family: "Nunito Bold", sans-serif; /* Добавлено для глобального применения шрифта */
 }
-@font-face{
+
+@font-face {
     font-family: "Nunito Bold";
     src: url(fonts/ofont.ru_Nunito.ttf);
 }
-a{
+
+a {
     text-decoration: none;
+    /* color: inherit; Убираем наследование цвета от родительского элемента */
+    color: #000;
 }
-li{
+
+li {
     color: #c32dbb;
 }
-h1{
+
+h1 {
     color: rgb(198, 58, 30);
+    font-size: 2em; /* Увеличен размер заголовка */
 }
-h2{
+
+h2 {
     color: chartreuse;
+    font-size: 1.5em; /* Увеличен размер заголовка */
 }
-label{
+
+label {
     color: #490000;
 }
-p{
+
+p {
     color: rgb(38, 253, 0);
-    font-size: 25px;
+    font-size: 1.25em; /* Увеличен размер текста */
 }
-button{
+
+button {
     background-color: #c32dbb;
+    color: white; /* Добавлен цвет текста для кнопок */
+    border: none; /* Убраны границы у кнопок */
+    border-radius: 5px; /* Закругленные углы для кнопок */
+    padding: 10px 15px; /* Увеличены отступы для кнопок */
+    cursor: pointer; /* Изменение курсора при наведении */
 }
-.header_menu{
+
+/* Стили для шапки */
+.header_menu {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 10px 20px; /* Добавлены отступы для шапки */
+    background-color: rgba(0, 0, 0, 0.7); /* Полупрозрачный фон для шапки */
 }
-.header_menu a{
+
+.header_menu a {
     color: white;
 }
-.logo-text{
+
+.logo-text {
     display: inline-block;
     vertical-align: middle;
-    font-size: 10px;
+    font-size: 1em; /* Изменен размер шрифта для логотипа */
+    background: #000;
 }
-.logo-img{
+.logo-link{
+    text-decoration: none;
+}
+.logo-img {
     display: inline-block;
     vertical-align: middle;
 }
-.logo-img img{
+
+.logo-img img {
     width: 35px;
-    height: 22px;
-    flex-shrink: 0;
+    height: auto; /* Автоматическое сохранение пропорций изображения */
 }
 
-.logo{
+.logo {
     display: inline-block;
-    vertical-align: middle;
-    position: relative;
-    top: 9px;
-    left: 25px;
-}
-.menu{
-    position: relative;
-    left: 200px;
-    display: inline-block;
-    vertical-align: middle;
-}
-.menu li{
-    display: inline-block;
-    vertical-align: middle;
-}
-.menu a{
-    position: relative;
-    top: 8px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 44px;
-    font-family: "Nunito Bold";
-    font-size: 9px;
 }
 
-.book{
-    position: relative;
-    top: 8px;
-    display: inline-block;
-    vertical-align: middle;
+.menu {
+    display: flex; /* Используем flexbox для меню */
+}
+
+.menu li {
+    margin-left: 20px; /* Отступ между пунктами меню */
+}
+
+.menu a {
     font-family: "Nunito Bold";
+    font-size: 1em; /* Изменен размер шрифта для меню */
 }
-.book-call{
-    display: inline-block;
-    vertical-align: middle;
-    font-family: "Nunito Bold";
-    font-size: 9px;
+
+/* Стили для блока бронирования и контактов */
+.book {
+    display: flex;
+    align-items: center; /* Выравнивание по центру вертикально */
 }
-.book-call a{
-    position: relative;
-    bottom: 5px;
+
+.book-call {
+    margin-right: 20px; /* Отступ между звонком и кнопками */
 }
-.book-button{
-    display: inline-block;
-    vertical-align: middle;
-    position: relative;
-    left: 20px;
-}
-.book-button a button{
+
+.book-button a button,
+.sign a button {
     background-color: #490000;
-    color: white;
-    display: inline-flex;
-    padding: 12px 10px 10px 10px;
-    font-family: "Nunito Bold";
-    font-size: 9px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-.sign{
-    position: relative;
-    top: 8px;
-    right: 25px;
-    display: inline-block;
-    vertical-align: middle;
-}
-.sign a button{
-    background: none;
-    color: white;
-    display: inline-flex;
-    padding: 12px 10px 10px 10px;
-    font-family: "Nunito Bold";
-    font-size: 9px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border: 1px solid #FFF;
-}
-.line{
-    margin-top: 20px;
-    stroke-width: 0.5px solid white
 }
 
+.sign a button {
+    border-radius: 5px; /* Закругленные углы для кнопок в блоке sign */
+}
+
+/* Стили для горизонтальной линии */
+.line {
+    margin-top: 20px;
+}
