@@ -44,7 +44,7 @@ class GenreListView(ListView):
     template_name = "movies/genre.html"
     context_object_name = "genres"
 
-    def get_queryset(self) -> QuerySet: # type: ignore
+    def get_queryset(self):
         # Возвращаем уникальные жанры
         return Genre.objects.distinct()
 
@@ -68,7 +68,7 @@ class MovieSearchView(ListView):
     template_name = "movies/search_movies.html"
     context_object_name = "movies"
 
-    def get_queryset(self) -> QuerySet: # type: ignore
+    def get_queryset(self):
         q = self.request.GET.get("q")
         if q:
             return Movie.objects.filter(

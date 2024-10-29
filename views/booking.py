@@ -25,7 +25,7 @@ class BookingListView(LoginRequiredMixin, ListView):
     context_object_name = "bookings"
     login_url = "login"
 
-    def get_queryset(self) -> QuerySet: # type: ignore
+    def get_queryset(self):
         # Фильтруем бронирования для текущего пользователя
         return Booking.objects.filter(user=self.request.user)
 
@@ -143,7 +143,7 @@ class BookingViewSet(
     permission_classes = (IsAuthenticated,)
     serializer_class = BookingSerializer
 
-    def get_queryset(self) -> QuerySet: # type: ignore
+    def get_queryset(self):
         """
         This view should return a list of all the Bookings
         for the currently authenticated user.
