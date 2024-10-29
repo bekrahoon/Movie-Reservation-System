@@ -6,7 +6,6 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from typing import Any, Dict
-from django.http import HttpRequest, HttpResponse
 
 
 class HomeView(ListView):
