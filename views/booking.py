@@ -1,11 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import views as auth_views
 from django.contrib import messages
-from django.views import View
 from django.views.generic import CreateView, DeleteView, ListView
+from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponse, JsonResponse
 from django.core.exceptions import ValidationError
-from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from base.serializers import BookingSerializer
 from base.models import Genre, Movie, Booking
@@ -62,7 +61,8 @@ class BookingCancelView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def handle_no_permission(self) -> HttpResponse:
         return HttpResponse("You are not allowed to cancel this booking!")
-    
+
+
 class BookingDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Booking
     success_url = reverse_lazy("booking_list")
@@ -120,8 +120,7 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
         movie.save()
         response = super().form_valid(form)
         # Перенаправляем на страницу подтверждения бронирования
-        return redirect('booking_list')
-
+        return redirect("booking_list")
 
 
 class CustomLoginView(auth_views.LoginView):
@@ -133,11 +132,13 @@ class CustomLoginView(auth_views.LoginView):
         return super().get(request, *args, **kwargs)
 
 
-
-class BookingViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+class BookingViewSet(
+    ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet
+):
     """
     A simple ViewSet for listing, retrieving and creating Bookings.
     """
+
     permission_classes = (IsAuthenticated,)
     serializer_class = BookingSerializer
 
@@ -156,11 +157,15 @@ class BookingViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
             if serializer.is_valid(raise_exception=True):
                 movie = Movie.objects.get(pk=data["movie"])
                 # Проверка на существующее бронирование и его удаление
-                existing_booking = Booking.objects.filter(user=request.user, movie=movie)
+                existing_booking = Booking.objects.filter(
+                    user=request.user, movie=movie
+                )
                 if existing_booking.exists():
                     existing_booking.delete()
                 booking = movie.place_booking(request.user, data["seats"])
-                return Response(BookingSerializer(booking).data, status=status.HTTP_201_CREATED)
+                return Response(
+                    BookingSerializer(booking).data, status=status.HTTP_201_CREATED
+                )
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except JSONDecodeError:

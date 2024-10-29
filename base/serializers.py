@@ -1,8 +1,8 @@
-from collections import OrderedDict
-from .models import Movie, Booking
+from rest_framework.exceptions import APIException
 from rest_framework_json_api import serializers
 from rest_framework import status
-from rest_framework.exceptions import APIException
+from collections import OrderedDict
+from .models import Movie, Booking
 
 
 class NotEnoughAvailable_seatsException(APIException):

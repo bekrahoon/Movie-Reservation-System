@@ -3,8 +3,6 @@ from django.templatetags.static import static
 from django.urls import reverse_lazy
 
 
-
-
 UNFOLD = {
     "SITE_TITLE": "Movie Reservation System",
     "SITE_HEADER": "Movie Reservation System",
@@ -16,7 +14,9 @@ UNFOLD = {
     },
     # "SITE_LOGO": lambda request: static("logo.svg"),  # both modes, optimise for 32px height
     "SITE_LOGO": {
-        "light": lambda request: static("img/логотипы/Cinema-4D-Logo.png"),  # light mode
+        "light": lambda request: static(
+            "img/логотипы/Cinema-4D-Logo.png"
+        ),  # light mode
         "dark": lambda request: static("img/логотипы/Cinema-4D-Logo.png"),  # dark mode
     },
     "SITE_SYMBOL": "speed",  # symbol from icon set
@@ -25,11 +25,11 @@ UNFOLD = {
             "rel": "icon",
             "sizes": "32x32",
             "type": "image/svg+xml",
-            "href": lambda request: static("img/логотипы/Cinema-4D-Logo.png"),  
+            "href": lambda request: static("img/логотипы/Cinema-4D-Logo.png"),
         },
     ],
-    "SHOW_HISTORY": True, # show/hide "History" button, default: True
-    "SHOW_VIEW_ON_SITE": True, # show/hide "View on site" button, default: True
+    "SHOW_HISTORY": True,  # show/hide "History" button, default: True
+    "SHOW_VIEW_ON_SITE": True,  # show/hide "View on site" button, default: True
     "COLORS": {
         "font": {
             "subtle-light": "107 114 128",
@@ -69,22 +69,20 @@ UNFOLD = {
                         "badge": "Admin",
                         "permission": lambda request: request.user.is_superuser,
                     },
-                                                                                {
+                    {
                         "title": _("Movie"),
                         "icon": "live_tv",  # Supported icon set: https://fonts.google.com/icons
                         "link": reverse_lazy("admin:base_movie_changelist"),
                         "badge": "Admin",
                         "permission": lambda request: request.user.is_superuser,
                     },
-                                        {
+                    {
                         "title": _("Booking"),
                         "icon": "interactive_space",  # Supported icon set: https://fonts.google.com/icons
                         "link": reverse_lazy("admin:base_booking_changelist"),
                         "badge": "Admin",
                         "permission": lambda request: request.user.is_superuser,
                     },
-
-                                                            
                 ],
             },
         ],
@@ -110,11 +108,12 @@ def environment_callback(request):
     Callback has to return a list of two values represeting text value and the color
     type of the label displayed in top right corner.
     """
-    return ["Production", "danger"] # info, danger, warning, success
+    return ["Production", "danger"]  # info, danger, warning, success
 
 
 def badge_callback(request):
     return 3
+
 
 def permission_callback(request):
     return request.user.has_perm("sample_app.change_model")

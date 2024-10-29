@@ -1,9 +1,9 @@
-from django.db import models
-from django.contrib.auth import get_user_model
-from utils.model_abstracts import BaseModel
-from django.utils import timezone
 from django.db import transaction
+from django.db import models
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+from utils.model_abstracts import BaseModel
 
 User = get_user_model()
 
@@ -23,10 +23,10 @@ class Movie(BaseModel):
     show_time = models.DateTimeField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
     available_seats = models.PositiveIntegerField()
-    
+
     def can_cancel(self):
         return self.show_time > timezone.now()
-    
+
     def check_available_seats(self, booking_seats):
         return booking_seats <= self.available_seats
 
@@ -35,7 +35,7 @@ class Movie(BaseModel):
             raise ValidationError("Not enough available seats.")
         booking = Booking.objects.create(user=user, movie=self, seats=seats)
         return booking
-    
+
     def __str__(self):
         return self.title
 

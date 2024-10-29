@@ -8,7 +8,7 @@
             <li class="cart-item">
                 <a href="{% url 'movie_detail' item.movie.id %}" class="movie-title">{{ item.movie.title }}</a>
                 — {{ item.movie.show_time }} — Мест: {{ item.quantity }}
-                <p class="movie-price">Общая стоимость: {{ item.movie.price }} $</p>
+                <p class="movie-price">Общая стоимость: {{ item.total_price }} $</p>
                 <div class="cart-item-actions">
                     <form method="post" action="{% url 'remove-from-cart' item.id %}" class="remove-form">
                         {% csrf_token %}
