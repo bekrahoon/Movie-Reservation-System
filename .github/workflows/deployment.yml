@@ -17,6 +17,11 @@ jobs:
           POSTGRES_DB: ${{ secrets.DATABASE_NAME }}
           POSTGRES_USER: ${{ secrets.DATABASE_USER }}
           POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        options: >-
+          --health-cmd "pg_isready -U ${{ secrets.DATABASE_USER }}"
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
         ports:
           - 5432:5432
 
@@ -39,7 +44,7 @@ jobs:
         echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
         echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> .env
         echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
-        echo "DATABASE_HOST=127.0.0.1" >> .env
+        echo "DATABASE_HOST=postgres" >> .env
         echo "DATABASE_PORT=5432" >> .env
         echo "DEBUG=${{ secrets.DEBUG }}" >> .env
         echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
@@ -52,6 +57,12 @@ jobs:
         DEBUG: ${{ secrets.DEBUG }}
         ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
 
+    - name: Wait for PostgreSQL to be ready
+      run: |
+        until pg_isready -h postgres -p 5432; do
+          sleep 1
+        done
+
     - name: Run tests
       run: |
         python manage.py test base.tests
@@ -60,7 +71,7 @@ jobs:
         DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         DATABASE_USER: ${{ secrets.DATABASE_USER }}
         DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-        DATABASE_HOST: 127.0.0.1
+        DATABASE_HOST: postgres
         DATABASE_PORT: 5432
         DEBUG: ${{ secrets.DEBUG }}
         ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
