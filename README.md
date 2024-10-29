@@ -7,30 +7,29 @@ Table of  Contents:
 - [Movie-Reservation-System](#movie-reservation-system)
 - [Table of  Contents:](#table-of--contents)
 - [Movie Reservation System](#movie-reservation-system-1)
-  - [Описание](#описание)
-  - [Установка](#установка)
+  - [Description](#description)
+  - [Installation](#installation)
   - [Docker](#docker)
-
 
 
 
 # Movie Reservation System
 ![image-logo](static/img/screen.png)
 
-## Описание
-Система бронирования фильмов, позволяющая пользователям бронировать билеты на фильмы и оплачивать их онлайн. Поддерживает создание учетных записей пользователей, авторизацию и корзину для удобного бронирования нескольких билетов.
+## Description
+A movie booking system that allows users to book movie tickets and pay online. Supports user account creation, authorization and shopping cart for easy booking of multiple tickets.
 
-## Установка
+## Installation
 
-1. Клонируйте репозиторий:
+1. Clone the repository:
    ```sh
    git clone https://github.com/bekrahoon/Movie-Reservation-System.git
 
-2. Перейдите в директорию проекта:
+2. Navigate to the project directory:
     ```sh
     cd Movie-Reservation-System
 
-3. Настройте файл `.env` с вашими переменными окружения:
+3. Customize the `.env` file with your environment variables:
 
     ```plaintext
     DEBUG = True
@@ -42,18 +41,18 @@ Table of  Contents:
 
 ## Docker
 
-1. Создайте и запустите контейнеры:
+1. Create and run containers:
     ```sh
     docker-compose up --build
 
-2. Выполните миграции базы данных:
+2. Perform database migrations:
     ```sh 
     docker-compose exec web python manage.py makemigrations
     docker-compose exec web python manage.py migrate
 
-3. Создайте суперпользователя:
+3. Create a superuser:
     ```sh
     docker-compose exec web python manage.py createsuperuser
 
-4. Перейдите по адресу http://localhost:8000 для доступа к приложению.
+4. Go to http://localhost:8000 to access the application.
 
