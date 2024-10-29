@@ -13,8 +13,8 @@ class Cart(models.Model):
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
+    quantity: int = models.PositiveIntegerField(default=1)
 
-    def total_price(self):
+    def total_price(self) -> float:
         total = self.quantity * self.movie.price
         return total

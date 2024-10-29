@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib import messages
 from django.views.generic import CreateView, DeleteView, ListView
 from django.shortcuts import get_object_or_404, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from base.serializers import BookingSerializer
@@ -16,6 +16,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework import status
 from json import JSONDecodeError
+from typing import  Any, Dict
 
 
 class BookingListView(LoginRequiredMixin, ListView):
@@ -24,11 +25,11 @@ class BookingListView(LoginRequiredMixin, ListView):
     context_object_name = "bookings"
     login_url = "login"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet: # type: ignore
         # Фильтруем бронирования для текущего пользователя
         return Booking.objects.filter(user=self.request.user)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         # Добавляем жанры в контекст
         context = super().get_context_data(**kwargs)
         context["genres"] = Genre.objects.all()
@@ -48,7 +49,7 @@ class BookingCancelView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         booking = self.get_object()
         return self.request.user == booking.user
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request:  HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         # Логика отмены бронирования
         booking = self.get_object()
         if booking.can_cancel():
@@ -73,7 +74,7 @@ class BookingDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         booking = self.get_object()
         return self.request.user == booking.user
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         # Логика отмены бронирования
         booking = self.get_object()
 
@@ -94,7 +95,7 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
     login_url = "login"
     success_url = reverse_lazy("booking_list")
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         movie = get_object_or_404(Movie, pk=self.kwargs["pk"])
         context["movie"] = movie
@@ -124,7 +125,7 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
 
 
 class CustomLoginView(auth_views.LoginView):
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         messages.info(
             request,
             "Пожалуйста, войдите или зарегистрируйтесь, чтобы получить доступ к этой странице.",
@@ -142,7 +143,7 @@ class BookingViewSet(
     permission_classes = (IsAuthenticated,)
     serializer_class = BookingSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet: # type: ignore
         """
         This view should return a list of all the Bookings
         for the currently authenticated user.
@@ -150,7 +151,7 @@ class BookingViewSet(
         user = self.request.user
         return Booking.objects.filter(user=user)
 
-    def create(self, request):
+    def create(self, request: HttpRequest) -> HttpResponse:
         try:
             data = JSONParser().parse(request)
             serializer = BookingSerializer(data=data)

@@ -5,6 +5,8 @@ from base.models import Genre, Movie
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
+from typing import Any, Dict
+from django.http import HttpRequest, HttpResponse
 
 
 class HomeView(ListView):
@@ -12,7 +14,7 @@ class HomeView(ListView):
     template_name = "movies/home.html"
     context_object_name = "movies"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["genres"] = Genre.objects.all()
         return context
@@ -23,7 +25,7 @@ class MovieDetailView(DetailView):
     template_name = "movies/movie_detail.html"
     context_object_name = "movie"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["genres"] = Genre.objects.all()
         return context
@@ -32,7 +34,7 @@ class MovieDetailView(DetailView):
 class AboutUsView(TemplateView):
     template_name = "movies/about_us.html"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["genres"] = Genre.objects.all()
         return context
@@ -43,7 +45,7 @@ class GenreListView(ListView):
     template_name = "movies/genre.html"
     context_object_name = "genres"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet: # type: ignore
         # Возвращаем уникальные жанры
         return Genre.objects.distinct()
 
@@ -53,7 +55,7 @@ class GenreMoviesView(DetailView):
     template_name = "movies/genre_movies.html"
     context_object_name = "genre"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         # Получаем контекст из родительского класса
         context = super().get_context_data(**kwargs)
         # Добавляем жанры и фильмы в контекст
@@ -67,7 +69,7 @@ class MovieSearchView(ListView):
     template_name = "movies/search_movies.html"
     context_object_name = "movies"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet: # type: ignore
         q = self.request.GET.get("q")
         if q:
             return Movie.objects.filter(
@@ -75,7 +77,7 @@ class MovieSearchView(ListView):
             )
         return Movie.objects.none()
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["q"] = self.request.GET.get("q", "")
         return context

@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import View
 from cart.models import Cart, CartItem
@@ -6,14 +7,15 @@ from base.models import Movie
 
 
 class CartView(LoginRequiredMixin, View):
-    def get(self, request):
+    def get(self, request: HttpRequest) -> HttpResponse:
+
         cart, created = Cart.objects.get_or_create(user=request.user)
         items = CartItem.objects.filter(cart=cart)
         return render(request, "movies/cart.html", {"cart": cart, "items": items})
 
 
 class AddToCartView(LoginRequiredMixin, View):
-    def post(self, request, movie_id):
+    def post(self, request: HttpRequest, movie_id: int) -> HttpResponse:
         # Retrieve the cart or create a new one for the user
         cart, created = Cart.objects.get_or_create(user=request.user)
         movie = get_object_or_404(Movie, id=movie_id)
@@ -38,7 +40,7 @@ class AddToCartView(LoginRequiredMixin, View):
 
 
 class RemoveFromCartView(LoginRequiredMixin, View):
-    def post(self, request, item_id):
+    def post(self, request: HttpRequest, item_id: int) -> HttpResponse:
         item = get_object_or_404(CartItem, id=item_id)
         item.delete()
         return redirect("cart")
