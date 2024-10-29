@@ -1,11 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import views as auth_views
 from django.contrib import messages
-from django.views import View
 from django.views.generic import CreateView, DeleteView, ListView
-from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.core.exceptions import ValidationError
-from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from base.serializers import BookingSerializer
 from base.models import Genre, Movie, Booking
@@ -17,6 +16,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework import status
 from json import JSONDecodeError
+from typing import  Any, Dict
 
 
 class BookingListView(LoginRequiredMixin, ListView):
@@ -25,11 +25,11 @@ class BookingListView(LoginRequiredMixin, ListView):
     context_object_name = "bookings"
     login_url = "login"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet: # type: ignore
         # Фильтруем бронирования для текущего пользователя
         return Booking.objects.filter(user=self.request.user)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         # Добавляем жанры в контекст
         context = super().get_context_data(**kwargs)
         context["genres"] = Genre.objects.all()
@@ -49,7 +49,7 @@ class BookingCancelView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         booking = self.get_object()
         return self.request.user == booking.user
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request:  HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         # Логика отмены бронирования
         booking = self.get_object()
         if booking.can_cancel():
@@ -62,7 +62,8 @@ class BookingCancelView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def handle_no_permission(self) -> HttpResponse:
         return HttpResponse("You are not allowed to cancel this booking!")
-    
+
+
 class BookingDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Booking
     success_url = reverse_lazy("booking_list")
@@ -73,7 +74,7 @@ class BookingDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         booking = self.get_object()
         return self.request.user == booking.user
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         # Логика отмены бронирования
         booking = self.get_object()
 
@@ -94,7 +95,7 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
     login_url = "login"
     success_url = reverse_lazy("booking_list")
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         movie = get_object_or_404(Movie, pk=self.kwargs["pk"])
         context["movie"] = movie
@@ -120,12 +121,11 @@ class BookingCreateView(LoginRequiredMixin, CreateView):
         movie.save()
         response = super().form_valid(form)
         # Перенаправляем на страницу подтверждения бронирования
-        return redirect('booking_list')
-
+        return redirect("booking_list")
 
 
 class CustomLoginView(auth_views.LoginView):
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         messages.info(
             request,
             "Пожалуйста, войдите или зарегистрируйтесь, чтобы получить доступ к этой странице.",
@@ -133,15 +133,17 @@ class CustomLoginView(auth_views.LoginView):
         return super().get(request, *args, **kwargs)
 
 
-
-class BookingViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+class BookingViewSet(
+    ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet
+):
     """
     A simple ViewSet for listing, retrieving and creating Bookings.
     """
+
     permission_classes = (IsAuthenticated,)
     serializer_class = BookingSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet: # type: ignore
         """
         This view should return a list of all the Bookings
         for the currently authenticated user.
@@ -149,18 +151,22 @@ class BookingViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gener
         user = self.request.user
         return Booking.objects.filter(user=user)
 
-    def create(self, request):
+    def create(self, request: HttpRequest) -> HttpResponse:
         try:
             data = JSONParser().parse(request)
             serializer = BookingSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
                 movie = Movie.objects.get(pk=data["movie"])
                 # Проверка на существующее бронирование и его удаление
-                existing_booking = Booking.objects.filter(user=request.user, movie=movie)
+                existing_booking = Booking.objects.filter(
+                    user=request.user, movie=movie
+                )
                 if existing_booking.exists():
                     existing_booking.delete()
                 booking = movie.place_booking(request.user, data["seats"])
-                return Response(BookingSerializer(booking).data, status=status.HTTP_201_CREATED)
+                return Response(
+                    BookingSerializer(booking).data, status=status.HTTP_201_CREATED
+                )
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except JSONDecodeError:

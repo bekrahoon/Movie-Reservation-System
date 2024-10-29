@@ -1,8 +1,8 @@
-from django.contrib import admin
 from django.contrib.postgres.fields import ArrayField
+from django.contrib import admin
 from django.db import models
-from unfold.admin import ModelAdmin
 from unfold.contrib.forms.widgets import ArrayWidget, WysiwygWidget
+from unfold.admin import ModelAdmin
 from .models import Booking, Genre, Movie
 
 

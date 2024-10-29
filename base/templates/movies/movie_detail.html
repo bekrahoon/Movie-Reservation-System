@@ -24,8 +24,8 @@
     </form>     
     <form action="{% url 'add-to-cart' movie.pk %}" method="POST" class="cart-form">
         {% csrf_token %}
-        <label for="seats">Количество мест:</label>
-        <input type="number" name="seats" min="1" value="1" required class="seats-input">
+        <label for="quantity">Количество мест:</label>
+        <input type="number" name="quantity" min="1" value="1" required class="seats-input">
         <button type="submit" class="cart-button">Добавить в корзину</button>
     </form>
     {% else %}
