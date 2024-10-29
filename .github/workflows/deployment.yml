@@ -1,5 +1,3 @@
-name: CI
-
 on:
   push:
     branches: [ main ]
@@ -35,32 +33,24 @@ jobs:
 
     - name: Set up Django environment
       run: |
-        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
-        echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
-        echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> .env
-        echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
-        echo "DATABASE_HOST=127.0.0.1" >> .env
+        echo "DATABASE_HOST=db" >> .env
         echo "DATABASE_PORT=5432" >> .env
-        echo "DEBUG=${{ secrets.DEBUG }}" >> .env
-        echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
+        # остальные переменные
         cat .env
-      env:
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-        DATABASE_USER: ${{ secrets.DATABASE_USER }}
-        DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-        DEBUG: ${{ secrets.DEBUG }}
-        ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+
+    - name: Wait for PostgreSQL to start
+      run: |
+        until nc -z db 5432; do
+          echo "Waiting for PostgreSQL..."
+          sleep 1
+        done
 
     - name: Run tests
       run: |
         python manage.py test base.tests
       env:
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
         DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         DATABASE_USER: ${{ secrets.DATABASE_USER }}
         DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         DATABASE_HOST: db
         DATABASE_PORT: 5432
-        DEBUG: ${{ secrets.DEBUG }}
-        ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
