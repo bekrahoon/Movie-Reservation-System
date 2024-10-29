@@ -10,42 +10,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: ${{ secrets.DATABASE_NAME }}
-          POSTGRES_USER: ${{ secrets.DATABASE_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-        options: >-
-          --health-cmd "pg_isready -U ${{ secrets.DATABASE_USER }}"
-          --health-interval 10s 
-          --health-timeout 5s 
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     steps:
     - uses: actions/checkout@v2
-    
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: 3.x
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-
     - name: Set up Django environment
       run: |
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
         echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
         echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> .env
         echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
-        echo "DATABASE_HOST=postgres" >> .env
-        echo "DATABASE_PORT=5432" >> .env
+        echo "DATABASE_HOST=db" >> .env
         echo "DEBUG=${{ secrets.DEBUG }}" >> .env
         echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
         cat .env
@@ -56,22 +37,14 @@ jobs:
         DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         DEBUG: ${{ secrets.DEBUG }}
         ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
-
-    - name: Wait for PostgreSQL to be ready
-      run: |
-        until pg_isready -h postgres -p 5432; do
-          sleep 1
-        done
-
     - name: Run tests
       run: |
-        python manage.py test base.tests
+        python manage.py test
       env:
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        DATABASE_HOST: db
         DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         DATABASE_USER: ${{ secrets.DATABASE_USER }}
         DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-        DATABASE_HOST: postgres
-        DATABASE_PORT: 5432
         DEBUG: ${{ secrets.DEBUG }}
         ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
