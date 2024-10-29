@@ -39,7 +39,7 @@ jobs:
         echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
         echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> .env
         echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
-        echo "DATABASE_HOST=localhost" >> .env
+        echo "DATABASE_HOST=127.0.0.1" >> .env
         echo "DATABASE_PORT=5432" >> .env
         echo "DEBUG=${{ secrets.DEBUG }}" >> .env
         echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
@@ -60,7 +60,7 @@ jobs:
         DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         DATABASE_USER: ${{ secrets.DATABASE_USER }}
         DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-        DATABASE_HOST: localhost
+        DATABASE_HOST: db
         DATABASE_PORT: 5432
         DEBUG: ${{ secrets.DEBUG }}
         ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
