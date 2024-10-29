@@ -60,7 +60,7 @@ jobs:
         DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         DATABASE_USER: ${{ secrets.DATABASE_USER }}
         DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-        DATABASE_HOST: db
+        DATABASE_HOST: 127.0.0.1
         DATABASE_PORT: 5432
         DEBUG: ${{ secrets.DEBUG }}
         ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
