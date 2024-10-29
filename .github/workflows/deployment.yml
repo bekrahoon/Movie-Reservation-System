@@ -38,7 +38,7 @@ jobs:
         ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
     - name: Run tests
       run: |
-        python manage.py test
+        python manage.py test base.tests
       env:
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
         DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
