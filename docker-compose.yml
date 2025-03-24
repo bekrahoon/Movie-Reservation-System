@@ -44,10 +44,9 @@ services:
 
   nginx:
     image: nginx:latest
-  volumes:
-    - ./nginx/sites-available/my_site.conf:/etc/nginx/sites-available/my_site.conf
-    - ./nginx/sites-enabled:/etc/nginx/sites-enabled
-
+    volumes:
+      - ./nginx/sites-available/my_site.conf:/etc/nginx/sites-available/my_site.conf
+      - ./nginx/sites-enabled:/etc/nginx/sites-enabled
     ports:
       - "80:80"
     depends_on:
@@ -61,3 +60,4 @@ volumes:
 networks:
   app-network:
     driver: bridge
+
