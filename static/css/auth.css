@@ -1,0 +1,14 @@
+/* Simple custom styles to improve auth pages */
+body.bg-light {
+  background: linear-gradient(180deg, #f8f9fa 0%, #eef2f6 100%);
+}
+.card-title { font-weight: 600; }
+.form-label { font-weight: 500; }
+input, textarea, select { width: 100%; }
+input[type="text"], input[type="email"], input[type="password"], textarea { padding: .5rem .75rem; border-radius: .375rem; border: 1px solid #dfe3e8; }
+.btn-link { color: #6c757d; }
+
+/* small screens adjustments */
+@media (max-width: 576px) {
+  .card-body { padding: 1rem; }
+}

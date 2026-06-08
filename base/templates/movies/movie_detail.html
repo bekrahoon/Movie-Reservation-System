@@ -1,146 +1,46 @@
 {% extends "index.html" %}
 {% load static %}
 {% block content %}
-<div class="movie-detail-container">
-    <h1 class="movie-title">{{ movie.title }}</h1>
-    <img src="{{ movie.poster.url }}" alt="Постер фильма" class="movie-poster" width="300">
-    <p class="movie-description">{{ movie.description }}</p>
-    <p class="movie-genres">Жанры: {{ movie.genre.all|join:", " }}</p>
-    <p class="movie-show-time">Время показа: {{ movie.show_time }}</p>
-    <p class="movie-price">Стоимость: {{ movie.price }} $</p>
-    
-    {% if movie.available_seats != 0 %}
-        <p class="available-seats">Количество свободных мест: {{ movie.available_seats }}</p>
-    {% else %}
-        <p class="no-seats" style="color: red">Нет доступных мест</p>
-    {% endif %}
-    {% if movie.can_cancel %}
-    <h2>Бронирование</h2>
-    <form action="{% url 'booking_create' movie.pk %}" method="POST" class="booking-form">
-        {% csrf_token %}
-        <label for="seats">Количество мест:</label>
-        <input type="number" name="seats" min="1" value="1" required class="seats-input">
-        <button type="submit" class="booking-button">Забронировать</button>
-    </form>     
-    <form action="{% url 'add-to-cart' movie.pk %}" method="POST" class="cart-form">
-        {% csrf_token %}
-        <label for="quantity">Количество мест:</label>
-        <input type="number" name="quantity" min="1" value="1" required class="seats-input">
-        <button type="submit" class="cart-button">Добавить в корзину</button>
-    </form>
-    {% else %}
-        <p class="no-seats" style="color: red">Время показа закончилось</p>
+  <div class="row g-4">
+    <div class="col-12 col-md-4">
+      <div class="card">
+        <img src="{{ movie.poster.url }}" class="card-img-top" alt="{{ movie.title }}">
+      </div>
+    </div>
+    <div class="col-12 col-md-8">
+      <h2 class="mb-2">{{ movie.title }}</h2>
+      <p class="text-muted">Жанры: {{ movie.genre.all|join:", " }}</p>
+      <p>{{ movie.description }}</p>
+      <p class="mb-1"><strong>Время показа:</strong> {{ movie.show_time }}</p>
+      <p class="mb-3"><strong>Стоимость:</strong> {{ movie.price }} $</p>
 
-    {% endif %}
+      {% if movie.available_seats != 0 %}
+        <p class="mb-2">Количество свободных мест: <strong>{{ movie.available_seats }}</strong></p>
+      {% else %}
+        <p class="text-danger">Нет доступных мест</p>
+      {% endif %}
 
-    <a href="{% url 'home' %}" class="back-link">Вернуться к списку фильмов</a>
-</div>
+      {% if movie.can_cancel %}
+        <div class="d-flex gap-2 flex-column flex-sm-row">
+          <form action="{% url 'booking_create' movie.pk %}" method="POST" class="d-flex">
+            {% csrf_token %}
+            <input type="number" name="seats" min="1" value="1" required class="form-control form-control-sm me-2" style="width:90px;">
+            <button type="submit" class="btn btn-success">Забронировать</button>
+          </form>
 
+          <form action="{% url 'add-to-cart' movie.pk %}" method="POST" class="d-flex">
+            {% csrf_token %}
+            <input type="number" name="quantity" min="1" value="1" required class="form-control form-control-sm me-2" style="width:90px;">
+            <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+          </form>
+        </div>
+      {% else %}
+        <p class="text-danger">Время показа закончилось</p>
+      {% endif %}
 
-<style>
-    .movie-price {
-        font-size: 1.1em;               /* Standard font size */
-        color: #333;                    /* Neutral dark color for text */
-        font-weight: 500;               /* Moderate font weight */
-        margin: 5px 0;                  /* Small margin for spacing */
-    }
-    
-    .movie-detail-container {
-        max-width: 800px;
-        margin: 40px auto;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-    
-    .movie-title {
-        font-size: 2em;
-        color: #333;
-    }
-    
-    .movie-poster {
-        border-radius: 5px; /* Закругление углов постера */
-    }
-    
-    .movie-description {
-        margin: 15px 0;
-        color:  #111;
-
-    }
-    
-    .movie-genres,
-    .movie-show-time,
-    .available-seats,
-    .no-seats {
-        font-size: 1.1em;
-        color:  #158;
-
-    }
-    
-    .booking-form,
-    .cart-form {
-        margin-top: 20px; /* Отступ сверху для форм */
-    }
-    
-    .seats-input {
-        width: 60px; /* Ширина поля ввода количества мест */
-        margin-right: 10px; /* Отступ между полем ввода и кнопкой */
-    }
-    
-    .booking-button,
-    .cart-button {
-        padding: 5px 10px;
-        font-size: 0.9em;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-    }
-    
-    .booking-button {
-        background-color: #28a745; /* Зеленый цвет для бронирования */
-    }
-    
-    .booking-button:hover {
-        background-color: #218838; /* Темнее при наведении */
-    }
-    
-    .cart-button {
-        background-color: #007BFF; /* Синий цвет для добавления в корзину */
-    }
-    
-    .cart-button:hover {
-        background-color: #0056b3; /* Темнее при наведении */
-    }
-    
-    .back-link {
-        display: inline-block;
-        margin-top: 20px;
-        text-decoration: none;
-        color: #007BFF; /* Цвет ссылки */
-    }
-    
-    .back-link:hover {
-        text-decoration: underline; /* Подчеркивание при наведении */
-    }
-</style>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const bookingButtons = document.querySelectorAll('.booking-button');
-        
-        bookingButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                this.style.cursor = 'not-allowed'; // Изменение курсора
-            });
-        });
-    
-        const cartButtons = document.querySelectorAll('.cart-button');
-    
-        cartButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                this.style.cursor = 'not-allowed'; // Изменение курсора
-            });
-        });
-    });
-</script>
+      <div class="mt-4">
+        <a href="{% url 'home' %}" class="btn btn-link">Вернуться к списку фильмов</a>
+      </div>
+    </div>
+  </div>
 {% endblock content %}

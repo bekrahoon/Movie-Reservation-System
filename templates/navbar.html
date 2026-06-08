@@ -1,139 +1,45 @@
 {% load static %}
-<header>
-    <div class="header_menu">
-        <div class="logo">
-            <div class="logo-img">
-                <a href="{% url 'home' %}"><img src="{% static 'img/логотипы/Cinema-4D-Logo.png' %}" alt="LOGO"></a>
-            </div>
-            <div class="logo-text">
-                <a class="logo-link" href="{% url 'home' %}">CINEMA 4D</a>
-            </div>
-        </div>
-        <div class="menu">
-            <ul>
-                <li><a href="{% url 'home' %}">ГЛАВНАЯ</a></li>
-                <li><a href="{% url 'about_us' %}">О НАС</a></li>
-                <li><a href="{% url 'genres' %}">ЖАНРЫ</a></li>
-                {% if request.user.is_superuser %}
-                    <li><a href="{% url 'admin:index' %}">ADMIN PANEL</a></li>
-                {% endif %}
-            </ul>
-        </div>
-        <form method="GET" action="{% url 'search_movies' %}">
-            <input type="text" name="q" placeholder="Поиск фильмов..." class="search-input">
-            <button type="submit" class="search-button">Искать</button>
-        </form>
-        <div class="book">
-            <div class="book-call">
-                <img src="{% static 'img/call.png' %}" alt="call">
-                <a href="#" style='color: #000;'>+996 555 740 423</a>
-            </div>
-            <div class="book-button">
-                <a href="{% url 'cart' %}"><button>Корзина</button></a>
-            </div>
-            <div class="book-button">
-                <a href="{% url 'booking_list' %}"><button>ЗАБРОНИРОВАННЫЕ</button></a>
-            </div>
-        </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+      <img src="{% static 'img/логотипы/Cinema-4D-Logo.png' %}" alt="Logo" height="40" class="me-2">
+      <span class="fw-bold">CINEMA 4D</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <div class="sign">
-            {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}"><button>Выйти</button></a>
-            {% else %}
-                <a href="{% url 'register' %}"><button>Зарегестрироваться</button></a>
-                <a href="{% url 'login' %}"><button>Войти</button></a>
-            {% endif %}
-        </div>
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Главная</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'about_us' %}">О нас</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'genres' %}">Жанры</a></li>
+        {% if request.user.is_superuser %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Admin</a></li>
+        {% endif %}
+      </ul>
 
+      <form class="d-flex me-3" method="get" action="{% url 'search_movies' %}">
+        <input class="form-control me-2" type="search" name="q" placeholder="Поиск фильмов..." aria-label="Search">
+        <button class="btn btn-outline-primary" type="submit">Искать</button>
+      </form>
+
+      <div class="d-flex align-items-center">
+        <a class="btn btn-outline-secondary me-2 d-none d-md-inline-flex" href="#">
+          <img src="{% static 'img/call.png' %}" alt="call" height="18" class="me-2">+996 555 740 423
+        </a>
+        <a class="btn btn-outline-primary me-2" href="{% url 'cart' %}">Корзина</a>
+        <a class="btn btn-outline-success me-2 d-none d-lg-inline" href="{% url 'booking_list' %}">Забронированные</a>
+
+        {% if user.is_authenticated %}
+          <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+            <button type="submit" class="btn btn-link">Выйти</button>
+          </form>
+        {% else %}
+          <a class="btn btn-link me-2" href="{% url 'register' %}">Регистрация</a>
+          <a class="btn btn-primary" href="{% url 'login' %}">Войти</a>
+        {% endif %}
+      </div>
     </div>
-    <hr class="line">
-</header>
-
-<style>
-    .header_menu {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 20px;
-        background-color: #fff;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .logo {
-        display: flex;
-        align-items: center;
-    }
-
-    .logo-img img {
-        height: 50px; /* Adjust logo size */
-    }
-
-    .menu ul {
-        list-style-type: none;
-        display: flex;
-        margin: 0;
-        padding: 0;
-    }
-
-    .menu li {
-        margin-right: 20px; /* Space between menu items */
-    }
-
-    .menu a {
-        text-decoration: none;
-        color: #333;
-    }
-
-    .menu a:hover {
-        color: #007BFF; /* Change color on hover */
-    }
-
-    .search-input {
-        padding: 5px;
-        margin-right: 10px; /* Space between input and button */
-    }
-
-    .search-button {
-        padding: 5px 10px;
-    }
-
-    .book {
-        display: flex;
-        align-items: center;
-    }
-
-    .book-call img {
-        width: 20px; /* Adjust call icon size */
-        margin-right: 5px; /* Space between icon and number */
-    }
-
-    .book-button {
-        margin-left: 10px; /* Space between buttons */
-    }
-
-    .line {
-        border-top: 1px solid #ccc; /* Style for the horizontal line */
-    }
-</style>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const menuItems = document.querySelectorAll('.menu a');
-
-    menuItems.forEach(item => {
-        item.addEventListener('mouseenter', function() {
-            this.classList.add('hover');
-        });
-
-        item.addEventListener('mouseleave', function() {
-            this.classList.remove('hover');
-        });
-    });
-});
-</script>
-
-<style>
-.hover {
-    text-decoration: underline; /* Underline effect on hover */
-}
-</style>
+  </div>
+</nav>

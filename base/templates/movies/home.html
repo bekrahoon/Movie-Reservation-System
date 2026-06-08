@@ -1,41 +1,46 @@
 {% extends "index.html" %}
 {% load static %}
 {% block content %}
-<div class="movies-container">
-    <h1 class="movies-title">Список фильмов</h1>
-    <ul class="movies-list">
-        {% for movie in movies %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <h1 class="h3">Список фильмов</h1>
+    </div>
+
+    {% for movie in movies %}
         {% if movie.can_cancel %}
-            <li class="movie-item">
-                <a href="{% url 'movie_detail' movie.id %}" class="movie-link">
-                    <img src="{{ movie.poster.url }}" alt="Постер фильма" class="movie-poster" width="200">
-                </a> 
-
-                <div class="movie-info">
-                    <a href="{% url 'movie_detail' movie.id %}" class="movie-title">{{ movie.title }}</a>
-                    - Жанры: {{ movie.genre.all|join:", " }}
-                    - Время показа: {{ movie.show_time }}
-                    <p class="movie-price">Стоимость: {{ movie.price }} $</p>
-
-                    {% if movie.available_seats != 0 %}
-                        <form action="{% url 'booking_create' movie.pk %}" method="POST" class="booking-form">
-                            {% csrf_token %}
-                            <button type="submit" class="booking-button">Забронировать</button>
-                        </form> 
-                        <form action="{% url 'add-to-cart' movie.pk %}" method="POST" class="cart-form">
-                            {% csrf_token %}
-                            <button type="submit" class="cart-button">Добавить в корзину</button>
-                        </form>
-                    {% else %}
-                        - <span class="no-seats">Нет доступных мест</span>
-                    {% endif %}
+            <div class="col-12 col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <a href="{% url 'movie_detail' movie.id %}">
+                        <img src="{{ movie.poster.url }}" class="card-img-top" alt="{{ movie.title }}">
+                    </a>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title"><a href="{% url 'movie_detail' movie.id %}" class="stretched-link text-decoration-none text-primary">{{ movie.title }}</a></h5>
+                        <p class="mb-1 small text-muted">Жанры: {{ movie.genre.all|join:", " }}</p>
+                        <p class="mb-2 small text-muted">Время показа: {{ movie.show_time }}</p>
+                        <div class="mt-auto">
+                            <p class="fw-semibold">Стоимость: {{ movie.price }} $</p>
+                            {% if movie.available_seats != 0 %}
+                                <div class="d-flex gap-2">
+                                    <form action="{% url 'booking_create' movie.pk %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-success btn-sm">Забронировать</button>
+                                    </form>
+                                    <form action="{% url 'add-to-cart' movie.pk %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary btn-sm">Добавить в корзину</button>
+                                    </form>
+                                </div>
+                            {% else %}
+                                <span class="text-danger">Нет доступных мест</span>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </li>
-            {% endif %}
-        {% empty %}
-            <li>Фильмов нет</li>
-        {% endfor %}
-    </ul>   
+            </div>
+        {% endif %}
+    {% empty %}
+        <div class="col-12">Фильмов нет</div>
+    {% endfor %}
 </div>
 <style>
     .movie-price {

@@ -1,103 +1,28 @@
 {% extends "index.html" %}
 {% load static %}
 {% block content %}
-<div class="genre-container">
-    <h2 class="genre-title">Фильмы жанра: <strong>{{ genre.name }}</strong></h2>
-    <ul class="movies-list">
-        {% for movie in movies %}
-            <li class="movie-item">
-                <a href="{% url 'movie_detail' movie.id %}" class="movie-link">
-                    <img src="{{ movie.poster.url }}" alt="Постер фильма" class="movie-poster" width="200">
-                </a>
-                <div class="movie-info">
-                    <a href="{% url 'movie_detail' movie.id %}" class="movie-title">{{ movie.title }}</a>
-                    <p class="movie-description">{{ movie.description }}</p>
-                    <p class="movie-price">Стоимость: {{ movie.price }} $</p>
-                </div>
-            </li>
-        {% empty %}
-            <li>Нет фильмов в этом жанре.</li>
-        {% endfor %}
-    </ul>
-</div>
-<style>
-    .genre-container {
-        max-width: 800px;
-        margin: 40px auto;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-    
-    .genre-title {
-        font-size: 2em;
-        color: #333;
-        margin-bottom: 20px;
-    }
-    
-    .movies-list {
-        list-style-type: none; /* Убираем маркеры списка */
-        padding: 0; /* Убираем отступы */
-    }
-    
-    .movie-item {
-        display: flex; /* Используем flexbox для выравнивания элементов */
-        margin-bottom: 20px; /* Отступ между фильмами */
-    }
-    
-    .movie-link {
-        margin-right: 15px; /* Отступ между постером и информацией о фильме */
-    }
-    
-    .movie-poster {
-        border-radius: 5px; /* Закругление углов постера */
-    }
-    
-    .movie-info {
-        flex-grow: 1; /* Позволяет этому блоку занимать оставшееся пространство */
-    }
-    
-    .movie-title {
-        font-size: 1.5em;
-        color: #007BFF; /* Цвет заголовка фильма */
-        text-decoration: none; /* Убираем подчеркивание */
-    }
-    
-    .movie-title:hover {
-        text-decoration: underline; /* Подчеркивание при наведении */
-    }
-    
-    .movie-description {
-        color: #555; /* Цвет описания фильма */
-    }
-    .movie-price {
-        font-size: 1.2em;       /* Increases font size slightly */
-        font-weight: bold;      /* Makes the text bold */
-        color: #333;            /* Dark gray color for text */
-        padding: 8px 12px;      /* Adds padding around the text */
-        background-color: #f9f9f9; /* Light background color */
-        border: 1px solid #ddd; /* Light border around the box */
-        border-radius: 5px;     /* Softens the corners */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds subtle shadow */
-        display: inline-block;  /* Makes the element fit content */
-    }
-    
-</style>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const moviePosters = document.querySelectorAll('.movie-poster');
-    
-        moviePosters.forEach(poster => {
-            poster.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.05)'; // Увеличиваем размер постера
-                this.style.transition = 'transform 0.3s ease'; // Плавная анимация
-            });
-    
-            poster.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)'; // Возвращаем размер постера
-            });
-        });
-    });
-</script>
+  <div class="row">
+    <div class="col-12 mb-4">
+      <h2 class="h4">Фильмы жанра: <strong>{{ genre.name }}</strong></h2>
+    </div>
+
+    {% for movie in movies %}
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <a href="{% url 'movie_detail' movie.id %}">
+            <img src="{{ movie.poster.url }}" class="card-img-top" alt="{{ movie.title }}">
+          </a>
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title mb-2"><a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none">{{ movie.title }}</a></h5>
+            <p class="card-text small text-muted">{{ movie.description|truncatechars:120 }}</p>
+            <p class="fw-semibold mt-auto mb-0">Стоимость: {{ movie.price }} $</p>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info">Нет фильмов в этом жанре.</div>
+      </div>
+    {% endfor %}
+  </div>
 {% endblock %}
