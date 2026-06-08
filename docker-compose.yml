@@ -5,25 +5,30 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      # store PG data in a subdirectory to avoid permission surprises
+      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
     restart: always
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data/pgdata
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      # check the specific database and user; give longer start period
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME} || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
 
   web:
     build: .
     command: >
       sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    # Host port is configurable via HOST_PORT env var; default 8001 to avoid conflicts
     ports:
-      - "8000:8000"
+      - "${HOST_PORT:-8001}:8000"
     restart: always
     depends_on:
       db:

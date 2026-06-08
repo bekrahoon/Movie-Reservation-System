@@ -56,3 +56,46 @@ A movie booking system that allows users to book movie tickets and pay online. S
 
 4. Go to http://localhost:8000 to access the application.
 
+## Troubleshooting PostgreSQL container
+
+If the `db` container becomes `unhealthy` or exits with code 1, common fixes:
+
+- View logs:
+    ```sh
+    docker compose logs db --tail 200 --follow
+    ```
+- Inspect container state:
+    ```sh
+    docker compose ps
+    docker inspect movie_reservation_system-db-1
+    ```
+- Check volume contents and ownership (this may require sudo/docker privileges):
+    ```sh
+    ./scripts/fix_db_volume.sh
+    # or manually:
+    docker run --rm -v movie_reservation_system_db_data:/var/lib/postgresql/data busybox sh -c "ls -la /var/lib/postgresql/data || true"
+    ```
+- If volume permissions are wrong you can either chown inside the volume or remove the volume (will delete DB data):
+    ```sh
+    docker run --rm -v movie_reservation_system_db_data:/var/lib/postgresql/data --entrypoint sh postgres:latest -c "chown -R 999:999 /var/lib/postgresql/data || true"
+    docker compose down
+    docker volume rm movie_reservation_system_db_data
+    docker compose up --build
+    ```
+
+If you want, запустите команды локально и пришлите вывод логов — я помогу проанализировать их дальше.
+If port 8000 is already used on your machine (for example by the local dev server), Compose will fail with "bind: address already in use". Two options:
+
+- Stop the process using port 8000 (e.g., your local Django runserver) or kill it:
+    ```sh
+    # find and kill the process (Linux/macOS)
+    lsof -i :8000
+    kill <PID>
+    ```
+- Or run the containers on a different host port by setting `HOST_PORT` in your `.env` or environment. Example to use 8001:
+    ```sh
+    # in project root
+    export HOST_PORT=8001
+    docker compose up --build
+    ```
+

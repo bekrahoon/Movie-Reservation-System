@@ -1,5 +1,5 @@
-# Use a specific version of Python to avoid compatibility issues
-FROM python:3.13
+# Use a stable Python minor version for better wheel availability
+FROM python:3.12
 
 # Set the working directory
 WORKDIR /app
@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
     libpq-dev
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip setuptools wheel \
+ && pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of your application code
 COPY . /app/
