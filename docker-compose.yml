@@ -24,8 +24,6 @@ services:
 
   web:
     build: .
-    command: >
-      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     # Host port is configurable via HOST_PORT env var; default 8001 to avoid conflicts
     ports:
       - "${HOST_PORT:-8001}:8000"
@@ -40,6 +38,9 @@ services:
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_NAME: ${DATABASE_NAME}
+      DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+      DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
     volumes:
       - .:/app
     networks:

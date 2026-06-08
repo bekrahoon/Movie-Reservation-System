@@ -22,6 +22,9 @@ COPY . /app/
 
 # Expose the port the app runs on
 EXPOSE 8000
+# Make entrypoint executable inside image (bind-mount may override permissions)
+RUN chmod +x ./scripts/docker-entrypoint.sh || true
 
-# Command to run your application with Gunicorn or runserver
+# Use shell to run the entrypoint script so bind-mounted files without exec bit still run
+ENTRYPOINT ["sh", "./scripts/docker-entrypoint.sh"]
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

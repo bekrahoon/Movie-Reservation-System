@@ -99,3 +99,30 @@ If port 8000 is already used on your machine (for example by the local dev serve
     docker compose up --build
     ```
 
+### Перенос данных из локальной SQLite в PostgreSQL (Compose)
+
+Если вы работали локально с `db.sqlite3` и хотите перенести таблицы и данные в PostgreSQL (контейнер `db`), выполните:
+
+1. Экспорт данных из SQLite в JSON-фикстуру (на хосте):
+```sh
+chmod +x scripts/export_sqlite_fixture.sh
+./scripts/export_sqlite_fixture.sh
+```
+
+2. Запустите Compose (если ещё не запущен):
+```sh
+export HOST_PORT=8001
+docker compose up -d
+```
+
+3. Импортируйте фикстуру в Django, запущенный в контейнере `web`:
+```sh
+chmod +x scripts/import_fixture_to_postgres.sh
+./scripts/import_fixture_to_postgres.sh
+```
+
+Примечания:
+- Скрипт `export_sqlite_fixture.sh` создаёт `data.json` в корне проекта и исключает `contenttypes` и `auth.permission`, чтобы избежать конфликтов при загрузке.
+- Перед импортом убедитесь, что миграции применены в контейнере (entrypoint в `web` уже запускает `migrate`).
+- После импорта проверьте в админке, что пользователи, модели и записи перенеслись корректно.
+
