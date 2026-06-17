@@ -41,28 +41,46 @@
         tg.ready();
         tg.expand();
 
-        async function authenticate() {
-            try {
-                const resp = await fetch('/telegram/auth/', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({initData: tg.initData}),
-                });
-                const data = await resp.json();
+        // Сразу запрашиваем контакт у пользователя
+        tg.requestContact(function(sent, event) {
+            if (!sent) {
+                // Отказался делиться — отправляем на обычный логин
+                window.location.href = '/login/';
+                return;
+            }
 
+            let phone = '';
+            if (event && event.responseUnsafe && event.responseUnsafe.contact) {
+                phone = event.responseUnsafe.contact.phone_number;
+            }
+            if (!phone) {
+                window.location.href = '/login/';
+                return;
+            }
+            if (!phone.startsWith('+')) {
+                phone = '+' + phone;
+            }
+
+            // Отправляем номер + initData на бэкенд
+            fetch('/telegram/auth/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({initData: tg.initData, phone: phone}),
+            })
+            .then(r => r.json())
+            .then(data => {
                 if (data.status === 'ok') {
-                    // Автовход — сразу на главную
+                    // Нашли аккаунт по номеру — залогинены, идём на сайт
                     window.location.href = '/';
                 } else {
-                    // Нет привязанного аккаунта — на страницу регистрации/логина
-                    window.location.href = '/login/';
+                    // Номер не зарегистрирован — на страницу регистрации
+                    window.location.href = '/register/';
                 }
-            } catch (e) {
+            })
+            .catch(() => {
                 window.location.href = '/login/';
-            }
-        }
-
-        authenticate();
+            });
+        });
     </script>
 </body>
 </html>
