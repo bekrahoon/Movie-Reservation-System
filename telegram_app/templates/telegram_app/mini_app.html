@@ -41,46 +41,65 @@
         tg.ready();
         tg.expand();
 
-        // Сразу запрашиваем контакт у пользователя
-        tg.requestContact(function(sent, event) {
-            if (!sent) {
-                // Отказался делиться — отправляем на обычный логин
-                window.location.href = '/login/';
-                return;
+        // Шаг 1: пробуем войти по telegram_id (мгновенно, без запроса контакта)
+        fetch('/telegram/auth/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({initData: tg.initData}),
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                // telegram_id уже привязан — мгновенный вход
+                window.location.href = '/';
+            } else {
+                // Первый раз — запрашиваем контакт
+                requestPhone();
             }
-
-            let phone = '';
-            if (event && event.responseUnsafe && event.responseUnsafe.contact) {
-                phone = event.responseUnsafe.contact.phone_number;
-            }
-            if (!phone) {
-                window.location.href = '/login/';
-                return;
-            }
-            if (!phone.startsWith('+')) {
-                phone = '+' + phone;
-            }
-
-            // Отправляем номер + initData на бэкенд
-            fetch('/telegram/auth/', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({initData: tg.initData, phone: phone}),
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.status === 'ok') {
-                    // Нашли аккаунт по номеру — залогинены, идём на сайт
-                    window.location.href = '/';
-                } else {
-                    // Номер не зарегистрирован — на страницу регистрации
-                    window.location.href = '/register/';
-                }
-            })
-            .catch(() => {
-                window.location.href = '/login/';
-            });
+        })
+        .catch(() => {
+            window.location.href = '/login/';
         });
+
+        // Шаг 2: запрос контакта (только при первом входе)
+        function requestPhone() {
+            tg.requestContact(function(sent, event) {
+                if (!sent) {
+                    window.location.href = '/login/';
+                    return;
+                }
+
+                let phone = '';
+                if (event && event.responseUnsafe && event.responseUnsafe.contact) {
+                    phone = event.responseUnsafe.contact.phone_number;
+                }
+                if (!phone) {
+                    window.location.href = '/login/';
+                    return;
+                }
+                if (!phone.startsWith('+')) {
+                    phone = '+' + phone;
+                }
+
+                // Отправляем номер — бэкенд найдёт юзера и сохранит telegram_id
+                fetch('/telegram/link/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({initData: tg.initData, phone: phone}),
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        window.location.href = '/';
+                    } else {
+                        window.location.href = '/register/';
+                    }
+                })
+                .catch(() => {
+                    window.location.href = '/login/';
+                });
+            });
+        }
     </script>
 </body>
 </html>
