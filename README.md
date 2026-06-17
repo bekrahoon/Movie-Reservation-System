@@ -99,6 +99,51 @@ If port 8000 is already used on your machine (for example by the local dev serve
     docker compose up --build
     ```
 
+## Telegram Mini App
+
+Проект поддерживает вход через Telegram Mini App. Пользователи могут связать Telegram-аккаунт с аккаунтом на сайте через номер телефона.
+
+### Настройка
+
+1. Создайте бота у [@BotFather](https://t.me/BotFather) и получите токен.
+
+2. Добавьте токен в `.env`:
+   ```
+   TELEGRAM_BOT_TOKEN=123456:ABC-DEF...
+   ```
+
+3. Настройте Mini App в @BotFather:
+   - Откройте @BotFather → `/mybots` → выберите бота → **Bot Settings** → **Menu Button**.
+   - Или: `/newapp` → укажите URL: `https://your-domain.com/telegram/`.
+
+4. Пересоберите контейнеры:
+   ```sh
+   docker-compose up --build
+   ```
+
+### Как это работает
+
+- Пользователь открывает Mini App в Telegram.
+- Бэкенд проверяет подпись `initData` (HMAC-SHA256) — без серверной проверки вход невозможен.
+- Если `telegram_id` уже привязан к аккаунту — автоматический вход.
+- Если нет — Telegram запрашивает контакт. По номеру телефона ищется существующий аккаунт на сайте:
+  - Найден → привязывается `telegram_id`, вход.
+  - Не найден → создаётся новый аккаунт.
+
+### Привязка телефона на сайте
+
+Залогиненные пользователи могут привязать номер телефона на странице `/profile/phone/`. Это позволит связать аккаунт на сайте с Telegram.
+
+### Тестирование локально
+
+Для тестирования Mini App локально используйте [ngrok](https://ngrok.com/) или аналог:
+```sh
+ngrok http 8000
+```
+Затем укажите полученный HTTPS-URL в настройках Mini App у @BotFather.
+
+---
+
 ### Перенос данных из локальной SQLite в PostgreSQL (Compose)
 
 Если вы работали локально с `db.sqlite3` и хотите перенести таблицы и данные в PostgreSQL (контейнер `db`), выполните:

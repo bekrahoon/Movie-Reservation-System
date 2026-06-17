@@ -32,6 +32,7 @@
         <a class="btn btn-outline-success me-2 d-none d-lg-inline" href="{% url 'booking_list' %}">Забронированные</a>
 
         {% if user.is_authenticated %}
+          <a class="btn btn-outline-info me-2" href="{% url 'link_phone' %}">Профиль</a>
           <form method="post" action="{% url 'logout' %}">{% csrf_token %}
             <button type="submit" class="btn btn-link">Выйти</button>
           </form>
