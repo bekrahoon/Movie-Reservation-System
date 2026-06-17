@@ -20,6 +20,9 @@ RUN pip install --upgrade pip setuptools wheel \
 # Copy the rest of your application code
 COPY . /app/
 
+# Собираем статику на этапе сборки образа
+RUN USE_SQLITE=True SECRET_KEY=build-placeholder python manage.py collectstatic --noinput
+
 # Expose the port the app runs on
 EXPOSE 8000
 # Make entrypoint executable inside image (bind-mount may override permissions)

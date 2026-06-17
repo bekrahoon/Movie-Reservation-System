@@ -170,6 +170,12 @@ LOGIN_REDIRECT_URL = "home"
 
 TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="")
 
+CSRF_TRUSTED_ORIGINS = config(
+    "CSRF_TRUSTED_ORIGINS",
+    default="",
+    cast=lambda v: [i.strip() for i in v.split(",") if i.strip()],
+)
+
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "rest_framework_json_api.exceptions.exception_handler",
     "DEFAULT_PARSER_CLASSES": ("rest_framework_json_api.parsers.JSONParser",),
