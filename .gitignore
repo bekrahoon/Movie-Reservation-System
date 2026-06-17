@@ -155,7 +155,7 @@ dmypy.json
 cython_debug/
 
 
-*/migrations/
+*/migrations/__pycache__/
 
 staticfiles/
 
