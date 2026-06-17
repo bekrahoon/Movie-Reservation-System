@@ -12,36 +12,15 @@
             padding: 20px;
             background: var(--tg-theme-bg-color, #fff);
             color: var(--tg-theme-text-color, #000);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
         .container { max-width: 400px; margin: 0 auto; text-align: center; }
-        h1 { font-size: 1.4em; margin-bottom: 16px; }
-        .status {
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            font-size: 0.95em;
-        }
-        .status-ok { background: #d4edda; color: #155724; }
-        .status-error { background: #f8d7da; color: #721c24; }
-        .status-info { background: #cce5ff; color: #004085; }
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            margin: 8px 0;
-            width: 100%;
-        }
-        .btn-primary {
-            background: var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-text-color, #fff);
-        }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .spinner {
             display: inline-block;
-            width: 24px; height: 24px;
+            width: 32px; height: 32px;
             border: 3px solid rgba(0,0,0,.1);
             border-top-color: var(--tg-theme-button-color, #3390ec);
             border-radius: 50%;
@@ -49,41 +28,12 @@
             margin: 20px auto;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Cinema 4D</h1>
-
-        <div id="loading">
-            <div class="spinner"></div>
-            <p>Проверяем данные...</p>
-        </div>
-
-        <div id="result-ok" class="hidden">
-            <div class="status status-ok">
-                <p>Вы вошли как <strong id="username-display"></strong></p>
-                <p>Перенаправляем на сайт...</p>
-            </div>
-        </div>
-
-        <div id="phone-required" class="hidden">
-            <div class="status status-info">
-                <p>Для входа нужно связать ваш Telegram с аккаунтом.</p>
-                <p>Поделитесь номером телефона:</p>
-            </div>
-            <button id="share-contact-btn" class="btn btn-primary" onclick="requestContact()">
-                Поделиться контактом
-            </button>
-        </div>
-
-        <div id="error-block" class="hidden">
-            <div class="status status-error">
-                <p id="error-message"></p>
-            </div>
-            <button class="btn btn-primary" onclick="location.reload()">Попробовать снова</button>
-        </div>
+        <div class="spinner"></div>
+        <p>Входим...</p>
     </div>
 
     <script>
@@ -91,113 +41,27 @@
         tg.ready();
         tg.expand();
 
-        const initData = tg.initData;
-
-        function showBlock(id) {
-            ['loading', 'result-ok', 'phone-required', 'error-block'].forEach(b => {
-                document.getElementById(b).classList.add('hidden');
-            });
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function showError(msg) {
-            document.getElementById('error-message').textContent = msg;
-            showBlock('error-block');
-        }
-
-        // Шаг 1: отправляем initData на бэкенд для проверки
         async function authenticate() {
             try {
                 const resp = await fetch('/telegram/auth/', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({initData: initData}),
+                    body: JSON.stringify({initData: tg.initData}),
                 });
                 const data = await resp.json();
-
-                if (resp.status === 403) {
-                    showError('Не удалось подтвердить данные Telegram. Попробуйте открыть приложение заново.');
-                    return;
-                }
-                if (!resp.ok) {
-                    showError(data.error || 'Ошибка сервера');
-                    return;
-                }
 
                 if (data.status === 'ok') {
-                    document.getElementById('username-display').textContent = data.username;
-                    showBlock('result-ok');
-                    // Через секунду перенаправляем на главную сайта
-                    setTimeout(() => { window.location.href = '/'; }, 1000);
-                } else if (data.status === 'phone_required') {
-                    showBlock('phone-required');
+                    // Автовход — сразу на главную
+                    window.location.href = '/';
+                } else {
+                    // Нет привязанного аккаунта — на страницу регистрации/логина
+                    window.location.href = '/login/';
                 }
             } catch (e) {
-                showError('Не удалось связаться с сервером');
+                window.location.href = '/login/';
             }
         }
 
-        // Шаг 2: запрос контакта через Telegram WebApp API
-        function requestContact() {
-            const btn = document.getElementById('share-contact-btn');
-            btn.disabled = true;
-            btn.textContent = 'Ожидание...';
-
-            tg.requestContact(function(sent, event) {
-                if (!sent) {
-                    // Пользователь отказался поделиться контактом
-                    btn.disabled = false;
-                    btn.textContent = 'Поделиться контактом';
-                    showError('Без номера телефона связать аккаунт невозможно. Нажмите кнопку и разрешите доступ к контакту.');
-                    // Показываем кнопку снова после ошибки
-                    setTimeout(() => showBlock('phone-required'), 3000);
-                    return;
-                }
-
-                // Телефон получен от Telegram
-                let phone = '';
-                if (event && event.responseUnsafe && event.responseUnsafe.contact) {
-                    phone = event.responseUnsafe.contact.phone_number;
-                }
-                if (!phone) {
-                    showError('Не удалось получить номер телефона');
-                    return;
-                }
-
-                // Нормализация: добавляем «+» если нет
-                if (!phone.startsWith('+')) {
-                    phone = '+' + phone;
-                }
-
-                linkPhone(phone);
-            });
-        }
-
-        // Шаг 3: отправляем телефон + initData на бэкенд
-        async function linkPhone(phone) {
-            showBlock('loading');
-            try {
-                const resp = await fetch('/telegram/link/', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({initData: initData, phone: phone}),
-                });
-                const data = await resp.json();
-
-                if (!resp.ok) {
-                    showError(data.error || 'Ошибка при привязке');
-                    return;
-                }
-
-                document.getElementById('username-display').textContent = data.username;
-                showBlock('result-ok');
-                setTimeout(() => { window.location.href = '/'; }, 1000);
-            } catch (e) {
-                showError('Не удалось связаться с сервером');
-            }
-        }
-
-        // Запускаем аутентификацию при загрузке
         authenticate();
     </script>
 </body>
